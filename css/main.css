@@ -1,0 +1,43 @@
+
+
+/* ==========================================================================
+   Author's custom styles
+   ========================================================================== */
+
+h2 {
+	margin-bottom: 20px;
+}
+
+.container > p {
+	margin-bottom: 50px;
+	text-align: center;
+}
+
+#mainContent {
+	text-align: center;
+	margin-bottom: 40px;
+}
+
+#statusLbl {
+	font-size: 24pt;
+	font-weight: bold;
+	text-align: center;
+}
+
+#descriptionLbl {
+	text-align: left;
+	margin-top: 40px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+

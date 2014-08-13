@@ -1,0 +1,298 @@
+[
+  {
+    "Milestone":"Intake",
+    "Status":"Intake & Payment",
+    "WhoPerforming":"ISD Counter 1 or 2",
+    "Description":"Thanks for your application!  Staff is reviewing your application to ensure that all fees are properly calculated and we have the information needed to start processing it.",
+    "Duration":"1-2 Business Days",
+    "Contact":"For questions about your permit at this stage, call 617-635-5300 and ask for ISD Counter 1."
+  },
+  {
+    "Milestone":"Admin PZ Review",
+    "Status":"Intake & Payment",
+    "WhoPerforming":"ISD Counter 1 or 2",
+    "Description":"Thanks for your application!  Staff is reviewing your application to ensure that all fees are properly calculated and we have the information needed to start processing it.",
+    "Duration":"1-2 Business Days",
+    "Contact":"For questions about your permit at this stage, call 617-635-5300 and ask for ISD Counter 1."
+  },
+  {
+    "Milestone":"Fee",
+    "Status":"Intake & Payment",
+    "WhoPerforming":"ISD Counter 1 or 2",
+    "Description":"Thanks for your application!  Staff is reviewing your application to ensure that all fees are properly calculated and we have the information needed to start processing it.",
+    "Duration":"1-2 Business Days",
+    "Contact":"For questions about your permit at this stage, call 617-635-5300 and ask for ISD Counter 1."
+  },
+  {
+    "Milestone":"Fees",
+    "Status":"Intake & Payment",
+    "WhoPerforming":"ISD Counter 1 or 2",
+    "Description":"Thanks for your application!  Staff is reviewing your application to ensure that all fees are properly calculated and we have the information needed to start processing it.",
+    "Duration":"1-2 Business Days",
+    "Contact":"For questions about your permit at this stage, call 617-635-5300 and ask for ISD Counter 1."
+  },
+  {
+    "Milestone":"Awaiting Refund Request",
+    "Status":"Intake & Payment",
+    "WhoPerforming":"ISD Counter 1 or 2",
+    "Description":"Thanks for your application!  Staff is reviewing your application to ensure that all fees are properly calculated and we have the information needed to start processing it.",
+    "Duration":"1-2 Business Days",
+    "Contact":"For questions about your permit at this stage, call 617-635-5300 and ask for ISD Counter 1."
+  },
+  {
+    "Milestone":"Preliminary Inspection",
+    "Status":"Intake & Payment",
+    "WhoPerforming":"ISD Counter 1 or 2",
+    "Description":"Thanks for your application!  Staff is reviewing your application to ensure that all fees are properly calculated and we have the information needed to start processing it.",
+    "Duration":"1-2 Business Days",
+    "Contact":"For questions about your permit at this stage, call 617-635-5300 and ask for ISD Counter 1."
+  },
+  {
+    "Milestone":"PrelimInspection",
+    "Status":"Intake & Payment",
+    "WhoPerforming":"ISD Counter 1 or 2",
+    "Description":"Thanks for your application!  Staff is reviewing your application to ensure that all fees are properly calculated and we have the information needed to start processing it.",
+    "Duration":"1-2 Business Days",
+    "Contact":"For questions about your permit at this stage, call 617-635-5300 and ask for ISD Counter 1."
+  },
+  {
+    "Milestone":"PZCon",
+    "Status":"Project Review",
+    "WhoPerforming":"ISD Counter 3",
+    "Description":"Your project plan is under review by a professional familiar with local building and zoning codes.  In this stage, we're ensuring your project meets all applicable codes and regulatory requirements, working with agencies throughout the City.",
+    "Duration":"20 Total Business Days, including all reviews following request for additional information",
+    "Contact":"For questions about your permit at this stage, call 617-635-5300 and ask for ISD Counter 3."
+  },
+  {
+    "Milestone":"Assignment",
+    "Status":"Project Review",
+    "WhoPerforming":"ISD Counter 3",
+    "Description":"Your project plan is under review by a professional familiar with local building and zoning codes.  In this stage, we're ensuring your project meets all applicable codes and regulatory requirements, working with agencies throughout the City.",
+    "Duration":"20 Total Business Days, including all reviews following request for additional information",
+    "Contact":"For questions about your permit at this stage, call 617-635-5300 and ask for ISD Counter 3."
+  },
+  {
+    "Milestone":"PlanningZoning",
+    "Status":"Project Review",
+    "WhoPerforming":"ISD Counter 3",
+    "Description":"Your project plan is under review by a professional familiar with local building and zoning codes.  In this stage, we're ensuring your project meets all applicable codes and regulatory requirements, working with agencies throughout the City.",
+    "Duration":"20 Total Business Days, including all reviews following request for additional information",
+    "Contact":"For questions about your permit at this stage, call 617-635-5300 and ask for ISD Counter 3."
+  },
+  {
+    "Milestone":"Satisfy Conditions",
+    "Status":"Project Review",
+    "WhoPerforming":"ISD Counter 3",
+    "Description":"Your project plan is under review by a professional familiar with local building and zoning codes.  In this stage, we're ensuring your project meets all applicable codes and regulatory requirements, working with agencies throughout the City.",
+    "Duration":"20 Total Business Days, including all reviews following request for additional information",
+    "Contact":"For questions about your permit at this stage, call 617-635-5300 and ask for ISD Counter 3."
+  },
+  {
+    "Milestone":"Traffic Management Review",
+    "Status":"Project Review",
+    "WhoPerforming":"ISD Counter 3",
+    "Description":"Your project plan is under review by a professional familiar with local building and zoning codes.  In this stage, we're ensuring your project meets all applicable codes and regulatory requirements, working with agencies throughout the City.",
+    "Duration":"20 Total Business Days, including all reviews following request for additional information",
+    "Contact":"For questions about your permit at this stage, call 617-635-5300 and ask for ISD Counter 3."
+  },
+  {
+    "Milestone":"Waiting",
+    "Status":"Waiting",
+    "WhoPerforming":"Applicant needs to provide additional information",
+    "Description":"We need a little more information to continue our project review.  You should have received an official letter detailing the additional information needed. ",
+    "Duration":"Please get back to us soon so we can continue Project Review",
+    "Contact":"For questions about your permit at this stage, call 617-635-5300 and ask for ISD Counter 3."
+  },
+  {
+    "Milestone":"Extension",
+    "Status":"Waiting",
+    "WhoPerforming":"Applicant needs to provide additional information",
+    "Description":"We need a little more information to continue our project review.  You should have received an official letter detailing the additional information needed. ",
+    "Duration":"Please get back to us soon so we can continue Project Review",
+    "Contact":"For questions about your permit at this stage, call 617-635-5300 and ask for ISD Counter 3."
+  },
+  {
+    "Milestone":"BOA Pending",
+    "Status":"Zoning Review",
+    "WhoPerforming":"Zoning Board of Appeals",
+    "Description":"Your project requires special consideration because it conflicts with your area's zoning codes.  In order to continue, please file an application with the Zoning Board of Appeals. Intimidated?  Don't be!  It's a simple application available here.",
+    "Duration":"60-90 days",
+    "Contact":"For questions about your permit at this stage, call 617-635-5300 and ask for the Zoning Board of Appeals."
+  },
+  {
+    "Milestone":"Board of Appeals",
+    "Status":"Zoning Review",
+    "WhoPerforming":"Zoning Board of Appeals",
+    "Description":"Your project requires special consideration because it conflicts with your area's zoning codes.  In order to continue, please file an application with the Zoning Board of Appeals. Intimidated?  Don't be!  It's a simple application available here.",
+    "Duration":"60-90 days",
+    "Contact":"For questions about your permit at this stage, call 617-635-5300 and ask for the Zoning Board of Appeals."
+  },
+  {
+    "Milestone":"Board of Appeal",
+    "Status":"Zoning Review",
+    "WhoPerforming":"Zoning Board of Appeals",
+    "Description":"Your project requires special consideration because it conflicts with your area's zoning codes.  In order to continue, please file an application with the Zoning Board of Appeals. Intimidated?  Don't be!  It's a simple application available here.",
+    "Duration":"60-90 days",
+    "Contact":"For questions about your permit at this stage, call 617-635-5300 and ask for the Zoning Board of Appeals."
+  },
+  {
+    "Milestone":"Appeal Pending",
+    "Status":"Zoning Review",
+    "WhoPerforming":"Zoning Board of Appeals",
+    "Description":"Your project requires special consideration because it conflicts with your area's zoning codes.  In order to continue, please file an application with the Zoning Board of Appeals. Intimidated?  Don't be!  It's a simple application available here.",
+    "Duration":"60-90 days",
+    "Contact":"For questions about your permit at this stage, call 617-635-5300 and ask for the Zoning Board of Appeals."
+  },
+  {
+    "Milestone":"Bldg BOA Pending",
+    "Status":"Zoning Review",
+    "WhoPerforming":"Zoning Board of Appeals",
+    "Description":"Your project requires special consideration because it conflicts with your area's zoning codes.  In order to continue, please file an application with the Zoning Board of Appeals. Intimidated?  Don't be!  It's a simple application available here.",
+    "Duration":"60-90 days",
+    "Contact":"For questions about your permit at this stage, call 617-635-5300 and ask for the Zoning Board of Appeals."
+  },
+  {
+    "Milestone":"Final Review",
+    "Status":"Issuance",
+    "WhoPerforming":"ISD Counter 3",
+    "Description":"Congratulations!  You're ready to start your project and get to work.  Click here to print your building permit.  Please make sure to post this in a visible location to make sure your commuity knows your work is allowed.",
+    "Duration":"",
+    "Contact":"For questions about your permit at this stage, call 617-635-5300 and ask for ISD Counter 3."
+  },
+  {
+    "Milestone":"Review",
+    "Status":"Issuance",
+    "WhoPerforming":"ISD Counter 3",
+    "Description":"Congratulations!  You're ready to start your project and get to work.  Click here to print your building permit.  Please make sure to post this in a visible location to make sure your commuity knows your work is allowed.",
+    "Duration":"",
+    "Contact":"For questions about your permit at this stage, call 617-635-5300 and ask for ISD Counter 3."
+  },
+  {
+    "Milestone":"Ready To Issue",
+    "Status":"Issuance",
+    "WhoPerforming":"ISD Counter 3",
+    "Description":"Congratulations!  You're ready to start your project and get to work.  Click here to print your building permit.  Please make sure to post this in a visible location to make sure your commuity knows your work is allowed.",
+    "Duration":"",
+    "Contact":"For questions about your permit at this stage, call 617-635-5300 and ask for ISD Counter 3."
+  },
+  {
+    "Milestone":"ScheduleInspection",
+    "Status":"Inspections",
+    "WhoPerforming":"Building Inspection Unit",
+    "Description":"You've done the work, now we need to certify that it meets all code requirements.  Please contact the Building Inpsection unit to schedule an inspection and keep your project on track!",
+    "Duration":"",
+    "Contact":"For questions about your permit at this stage, call 617-635-5300 and ask for your assigned inspector."
+  },
+  {
+    "Milestone":"Inspection",
+    "Status":"Inspections",
+    "WhoPerforming":"Building Inspection Unit",
+    "Description":"You've done the work, now we need to certify that it meets all code requirements.  Please contact the Building Inpsection unit to schedule an inspection and keep your project on track!",
+    "Duration":"",
+    "Contact":"For questions about your permit at this stage, call 617-635-5300 and ask for your assigned inspector."
+  },
+  {
+    "Milestone":"Re-Inspection",
+    "Status":"Inspections",
+    "WhoPerforming":"Building Inspection Unit",
+    "Description":"You've done the work, now we need to certify that it meets all code requirements.  Please contact the Building Inpsection unit to schedule an inspection and keep your project on track!",
+    "Duration":"",
+    "Contact":"For questions about your permit at this stage, call 617-635-5300 and ask for your assigned inspector."
+  },
+  {
+    "Milestone":"Final Inspection",
+    "Status":"Inspections",
+    "WhoPerforming":"Building Inspection Unit",
+    "Description":"You've done the work, now we need to certify that it meets all code requirements.  Please contact the Building Inpsection unit to schedule an inspection and keep your project on track!",
+    "Duration":"",
+    "Contact":"For questions about your permit at this stage, call 617-635-5300 and ask for your assigned inspector."
+  },
+  {
+    "Milestone":"ReInspection",
+    "Status":"Inspections",
+    "WhoPerforming":"Building Inspection Unit",
+    "Description":"You've done the work, now we need to certify that it meets all code requirements.  Please contact the Building Inpsection unit to schedule an inspection and keep your project on track!",
+    "Duration":"",
+    "Contact":"For questions about your permit at this stage, call 617-635-5300 and ask for your assigned inspector."
+  },
+  {
+    "Milestone":"COO",
+    "Status":"Occupancy",
+    "WhoPerforming":"Occupancy Unit",
+    "Description":"You're almost there.  We need one final check to make sure your space is safe to use.  Staff is in the process of evaulating your certificate of occupancy.",
+    "Duration":"",
+    "Contact":"For questions about your permit at this stage, call 617-635-5300 and ask for Occupancy Unit."
+  },
+  {
+    "Milestone":"Certificate Issued",
+    "Status":"Occupancy",
+    "WhoPerforming":"Occupancy Unit",
+    "Description":"You're almost there.  We need one final check to make sure your space is safe to use.  Staff is in the process of evaulating your certificate of occupancy.",
+    "Duration":"",
+    "Contact":"For questions about your permit at this stage, call 617-635-5300 and ask for Occupancy Unit."
+  },
+  {
+    "Milestone":"OccNotOnFile",
+    "Status":"Occupancy",
+    "WhoPerforming":"Occupancy Unit",
+    "Description":"You're almost there.  We need one final check to make sure your space is safe to use.  Staff is in the process of evaulating your certificate of occupancy.",
+    "Duration":"",
+    "Contact":"For questions about your permit at this stage, call 617-635-5300 and ask for Occupancy Unit."
+  },
+  {
+    "Milestone":"Legal",
+    "Status":"Occupancy",
+    "WhoPerforming":"Occupancy Unit",
+    "Description":"You're almost there.  We need one final check to make sure your space is safe to use.  Staff is in the process of evaulating your certificate of occupancy.",
+    "Duration":"",
+    "Contact":"For questions about your permit at this stage, call 617-635-5300 and ask for Occupancy Unit."
+  },
+  {
+    "Milestone":"Abandon",
+    "Status":"Abandoned",
+    "WhoPerforming":"Abandoned",
+    "Description":"Abandoned",
+    "Duration":"",
+    "Contact":""
+  },
+  {
+    "Milestone":"Revoked",
+    "Status":"Revoked",
+    "WhoPerforming":"Revoked",
+    "Description":"Revoked",
+    "Duration":"",
+    "Contact":""
+  },
+  {
+    "Milestone":"Denied",
+    "Status":"Denied",
+    "WhoPerforming":"Denied",
+    "Description":"Denied",
+    "Duration":"",
+    "Contact":""
+  },
+  {
+    "Milestone":"Closed",
+    "Status":"Completed",
+    "WhoPerforming":"Completed",
+    "Description":"Completed",
+    "Duration":"",
+    "Contact":""
+  },
+  {
+    "Milestone":"Complete",
+    "Status":"Completed",
+    "WhoPerforming":"Completed",
+    "Description":"Completed",
+    "Duration":"",
+    "Contact":""
+  },
+  {
+    "Milestone":"Processing",
+    "Status":"Processing",
+    "WhoPerforming":"",
+    "Description":"We're taking a look at your application now. Stay tuned for more details.",
+    "Duration":"",
+    "Contact":"For questions about your permit at this stage, call 617-635-5300."
+  }
+]
