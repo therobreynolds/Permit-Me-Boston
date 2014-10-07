@@ -75,6 +75,8 @@ $(document).ready(function() {
 
 
 
+	} else {
+		$('#noInputWarning').html("<strong text-align=\"left\">Please enter a valid permit number.</strong>");
 	}
 })
 
