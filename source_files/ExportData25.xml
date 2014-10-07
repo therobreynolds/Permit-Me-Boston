@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<data-set xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<record>
+		<Permit> </Permit>
+		<Type> </Type>
+		<Assigned>N</Assigned>
+		<Started>N</Started>
+		<Completed>N</Completed>
+	</record>
+	<record>
+		<Permit>114205</Permit>
+		<Type>Issue Certificate Review</Type>
+		<Reviewer>MaryAnn McHugo</Reviewer>
+		<Assigned>Y</Assigned>
+		<Started>N</Started>
+		<Completed>Y</Completed>
+		<Status>Denied</Status>
+	</record>
+	<record>
+		<Permit>115855</Permit>
+		<Type>Issue Certificate Review</Type>
+		<Reviewer>MaryAnn McHugo</Reviewer>
+		<Assigned>Y</Assigned>
+		<Started>N</Started>
+		<Completed>Y</Completed>
+		<Status>Approve</Status>
+	</record>
+	<record>
+		<Permit>115861</Permit>
+		<Type>Issue Certificate Review</Type>
+		<Reviewer>MaryAnn McHugo</Reviewer>
+		<Assigned>Y</Assigned>
+		<Started>N</Started>
+		<Completed>Y</Completed>
+		<Status>Approve</Status>
+	</record>
+</data-set>
