@@ -12,12 +12,12 @@
             function openCSVFile(CSVfileName){
                 // create the object
                 var httpRequest = new XMLHttpRequest();
-                httpRequest.setRequestHeader('Access-Control-Allow-Origin','*');
                 httpRequest.onreadystatechange = function() {
                     processCSVContents(httpRequest);
                 }
                 // Send the request
                 httpRequest.open("POST", CSVfileName, true);
+                httpRequest.setRequestHeader('Access-Control-Allow-Origin','*');
                 httpRequest.send(null);
             }
 
