@@ -8,10 +8,11 @@
         <script src="js/details.js"></script>
         <script src="js/main.js"></script>
         <script>
-            header('Access-Control-Allow-Origin:*');
+            //header('Access-Control-Allow-Origin:*');
             function openCSVFile(CSVfileName){
                 // create the object
                 var httpRequest = new XMLHttpRequest();
+                httpRequest.setRequestHeader('Access-Control-Allow-Origin','*');
                 httpRequest.onreadystatechange = function() {
                     processCSVContents(httpRequest);
                 }
