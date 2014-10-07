@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset=utf-8 />
+<title>Load CSV</title>
+</head>
+<body>
+  <script>
+    (function() {
+
+      var xhr = new XMLHttpRequest();
+      xhr.onreadystatechange = handleStateChange;
+      xhr.open("GET", "http://jsbin.com/ocuqog/1");
+      xhr.send();
+      display("Request sent");
+
+      function handleStateChange() {
+        if (xhr.readyState == 4 &&
+            xhr.status >= 200 &&
+            xhr.status < 300) {
+          display("Got response");
+          showData(xhr.responseText);
+        }
+      }
+
+      function showData(data) {
+        var rows = data.split(/\s+/);
+        var rowNum;
+        var cells;
+        var cellNum;
+
+        for (rowNum = 0; rowNum < rows.length; ++rowNum) {
+          cells = rows[rowNum].split(",");
+          display("row " + rowNum +
+                  " has " + cells.length + " values(s)");
+          display("row " + rowNum + "'s first value is " +
+                  cells[0]);
+        }
+      }
+
+      function display(msg) {
+        var p = document.createElement('p');
+        p.innerHTML = String(msg);
+        document.body.appendChild(p);
+      }
+    })();
+  </script>
+</body>
+</html>

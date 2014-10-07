@@ -9,7 +9,7 @@ h2 {
 }
 
 .container > p {
-	margin-bottom: 50px;
+	margin-bottom: 20px;
 	text-align: center;
 }
 
@@ -19,23 +19,41 @@ h2 {
 }
 
 #statusLbl {
-	font-size: 24pt;
-	font-weight: bold;
+	font-size: 10pt;
 	text-align: center;
 }
 
 #descriptionLbl {
 	text-align: left;
-	margin-top: 40px;
+	margin-top: 10px;
 }
 
+#statusOnDateLbl {
+	text-align: left;
+	margin-top: 10px;
+}
 
+.col-lg-1, .col-lg-2, .col-lg-4 {
+	padding-left: 2px;
+	padding-right: 2px;
+}
 
+.col-lg-6 {
+	padding-left: 0px;
+}
 
+.alert {
+	padding-left: 5px;
+	padding-right: 5px;
+	padding-top: 15px;
+	padding-bottom: 15px;
+}
 
-
-
-
+.navbar-inverse .navbar-brand:hover,
+.navbar-inverse .navbar-brand:focus {
+  color: #999;
+  background-color: transparent;
+}
 
 
 
