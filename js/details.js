@@ -22,7 +22,7 @@ $(document).ready(function() {
 				console.log(data);
 				appData = data;
 				$('#statusOnDateLbl').html("Permit <i><b>#" + id + "</b></i> is in the <i><b>" + data.ProcessState.Code + "</b></i> phase as of " + (currentDate.getMonth()+1)+"/"+currentDate.getDate()+"/"+currentDate.getFullYear() + ".");
-				$('#statusLbl').text(data.ProcessState.Code);
+				//$('#statusLbl').text(data.ProcessState.Code);
 				//get the addresses of the applicants
 				$.each( data.Applicants, function( key, value ){
 					if(value.Contact.Identity.FullName === null){
@@ -76,7 +76,7 @@ $(document).ready(function() {
 
 
 	} else {
-		$('#noInputWarning').html("<strong text-align=\"left\">Please enter a valid permit number.</strong>");
+		$('#noInputWarning').html("<strong text-align=\"left\">Please enter a valid permit number.  Once submitted, please a llow a few seconds for the page content to load.</strong>");
 	}
 })
 
