@@ -76,7 +76,7 @@ $(document).ready(function() {
 
 
 	} else {
-		$('#noInputWarning').html("<strong text-align=\"left\">Please enter a valid permit number.  Once submitted, please a llow a few seconds for the page content to load.</strong>");
+		$('#noInputWarning').html("<strong text-align=\"left\">Please enter a valid permit number.  Once submitted, please allow a few seconds for the page content to load.</strong>");
 	}
 })
 
