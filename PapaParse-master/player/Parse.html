@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Access-Control-Allow-Origin" content="*">
+<!--<meta http-equiv="Access-Control-Allow-Origin" content="*">-->
 <title>Test CSV</title>
 </head>
 <body>
@@ -41,20 +41,28 @@
 //     // alert(lines);
 // }
 $.ajax({
-    headers: { 
-        "Access-Control-Allow-Origin":"https://rawgit.com"
-    }
-    });
-
-Papa.parse("https://rawgit.com/therobreynolds/permit-me-boston/master/source_files/ReviewExport.csv", {
-    download: true,
-    step: function(row) {
-        console.log("Row:", row.data);
-    },
-    complete: function() {
-        console.log("All done!");
-    }
+  type: 'GET',
+  url: 'https://rawgit.com/therobreynolds/permit-me-boston/master/source_files/ReviewExport.csv',
+  headers: {
+      'Access-Control-Allow-Origin': '*'
+  },
+  success: function() {
+      console.log('success');
+  },
+  error: function() {
+      console.log('failure');
+  }
 });
+
+// Papa.parse("https://rawgit.com/therobreynolds/permit-me-boston/master/source_files/ReviewExport.csv", {
+//     download: true,
+//     step: function(row) {
+//         console.log("Row:", row.data);
+//     },
+//     complete: function() {
+//         console.log("All done!");
+//     }
+// });
 
 </script>
 </html>
