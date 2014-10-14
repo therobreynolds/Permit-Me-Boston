@@ -39,6 +39,11 @@
 //     }
 //     // alert(lines);
 // }
+$.ajax({
+    headers: { 
+        "Access-Control-Allow-Origin":"https://rawgit.com"
+    }
+    });
 
 Papa.parse("https://rawgit.com/therobreynolds/permit-me-boston/master/source_files/ReviewExport.csv", {
     download: true,
