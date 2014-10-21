@@ -12,10 +12,11 @@
     <script>
         $( function () {
 
-            $.ajax("csv.txt",
+            $.ajax("ReviewExport.txt",
                     {
                         success : function (data, stats, xhr) {
                             $('#input').text(data);
+                            console.log(data);
                         }
                     })
                     .pipe( CSV.parse )
@@ -100,19 +101,6 @@
 
 <h4>Output as JSON:</h4>
 <pre><code id="out"></code></pre>
-
-<h3>About</h3>
-<div>
-    Author: <a href="https://github.com/gkindel">gkindel</a>
-    <br>
-     License:  <a href="http://www.opensource.org/licenses/mit-license.php">MIT</a>
-    <br>
-    Further Reading:
-    <ul>
-        <li><a href="http://en.wikipedia.org/wiki/Comma-separated_values">http://en.wikipedia.org/wiki/Comma-separated_values</a></li>
-        <li><a href="http://www.ietf.org/rfc/rfc4180.txt">http://www.ietf.org/rfc/rfc4180.txt</a></li>
-    </ul>
-</div>
 </body>
 </html>
 
