@@ -90,11 +90,11 @@ function CSV2JSON(csv) {
     return str;
 }
 
-$("#convert").click(function() {
-    var csv = $("#csv").val();
+$('#convert').click(function() {
+    var csv = $('#csv').val();
     var json = CSV2JSON(csv);
     console.log(json);
-    $("#json").val(json);
+    $('#json').val(json);
 });
 
 </script>
