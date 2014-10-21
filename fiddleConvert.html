@@ -5,8 +5,6 @@
 </head>
 <body>
     <p id="heading">CSV to JSON Converter</p>
-    <p class="small"><a href="http://jsfiddle.net/sturtevant/vUnF9/" target="_blank">JSON to CSV Converter</a>
-    <hr />
     <p>Paste Your CSV Here:</p>
     <textarea id="csv" class="text">"Id","UserName"
 "1","Sam Smith"
@@ -14,10 +12,7 @@
 "1","Zachary Zupers"</textarea>
     <br />
     <button id="convert">Convert to JSON</button>
-    &nbsp;&nbsp;
-    <button id="download">Download JSON</button>
     <textarea id="json" class="text"></textarea>
-    <p>Based on code posted <a href="http://www.bennadel.com/blog/1504-Ask-Ben-Parsing-CSV-Strings-With-Javascript-Exec-Regular-Expression-Command.htm" target="_blank">here on Ben Nadel's blog</a></p>
 </body>
 
 <script type="text/javascript">
@@ -100,12 +95,6 @@ $("#convert").click(function() {
     var json = CSV2JSON(csv);
     console.log(json);
     $("#json").val(json);
-});
-
-$("#download").click(function() {
-    var csv = $("#csv").val();
-    var json = CSV2JSON(csv);
-    window.open("data:text/json;charset=utf-8," + escape(json))
 });
 
 </script>
