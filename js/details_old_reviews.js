@@ -83,23 +83,7 @@ $(document).ready(function() {
 function getReviewsFunction(permitID){
 		var reviewsData = "";
 		var reviewIconTagText = "";
-			//get Review info
-		$.ajax("https://s3.amazonaws.com/permit-tracker-9000/CSV-JS-master/ReviewExport.csv", {
-    		success: function(data) {
-        		var reviewsJsonObject = csvjson.csv2json(data);
-        		console.log(reviewsJsonObject);
-        		// Now use jsonobject to do some charting...
-        		// $.each(
-        		// );
-				console.log(reviewsJsonObject.rows());
-    		},
-    		error: function() {
-        		// Show some error message, couldn't get the CSV file
-        		console.log('Could not access contents of reviews CSV file.')
-    		}
-		});
-
-
+		//get Review info
 		$.ajax({
 			url: "https://permitapidev.cityofboston.gov:4443/api/building/applicationinfo/"+permitID,
 			type: "GET",

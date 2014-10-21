@@ -1,21 +1,3 @@
-<html>
-<body>
-loaded
-<script src="js/vendor/jquery-1.11.0.min.js"></script>
-<script type="text/javascript">
-console.log("https://s3.amazonaws.com/permit-tracker-9000/CSV-JS-master/ReviewExport.csv");
-
-$.ajax("https://s3.amazonaws.com/permit-tracker-9000/CSV-JS-master/ReviewExport.csv", {
-    success: function(data) {
-        var jsonobject = csvjson.csv2json(data);
-        console.log(jsonobject);
-        // Now use jsonobject to do some charting...
-    },
-    error: function() {
-        // Show some error message, couldn't get the CSV file
-    }
-});
-
 /**
  * csvjson.js - A script to convert between CSV and JSON formats
  * Author: Aaron Snoswell (@aaronsnoswell, elucidatedbianry.com)
@@ -183,7 +165,3 @@ var csvjson = {};
   }
 
 })(); // Execute hidden-scope code
-
-</script>
-</body>
-</html>
