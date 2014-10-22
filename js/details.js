@@ -79,65 +79,59 @@ $(document).ready(function() {
 		$('#noInputWarning').html("<strong text-align=\"left\">Please enter a valid permit number.  Once submitted, please allow a few seconds for the page content to load.</strong>");
 	}
 })
-
+// Gets the Reviews data, formats it and outputs it to the #reviewsText tag on the details page
 function getReviewsFunction(permitID){
 		var reviewsData = "";
 		var reviewIconTagText = "";
+		//var numericPermitID = permitID.replace(/\D/g,'');
+		console.log(permitID);
 			//get Review info
-		$.ajax("https://s3.amazonaws.com/permit-tracker-9000/CSV-JS-master/ReviewExport.csv", {
+		$.ajax("https://s3.amazonaws.com/permit-tracker-9000/source_files/ReviewExport.csv", {
     		success: function(data) {
         		var reviewsJsonObject = csvjson.csv2json(data);
         		console.log(reviewsJsonObject);
         		// Now use jsonobject to do some charting...
-        		// $.each(
-        		// );
-				console.log(reviewsJsonObject.rows());
+				$.each(reviewsJsonObject.rows, function(key,value){
+					if(value.PermitNumber.toString() === permitID){
+						console.log(value);
+						console.log(value.ReviewerName.toString());
+						if(value.ReviewStatus.toString() === "0") {
+				   			reviewProgress = "Not yet Assigned";
+				   			reviewIcon = "<span class=\"glyphicon glyphicon-ban-circle\" title=\"Not yet Assigned\"></span>";
+					   		if(value.IsAssignedFlag.toString() === "Y"){
+					   			reviewProgress = "Assigned, but not Started";
+					   			reviewIcon = "<span class=\"glyphicon glyphicon-minus\" title=\"Assigned, but not Started\"></span>";
+					   		}
+					   		if(value.IsStartedFlag.toString() === "Y"){
+					   			reviewProgress = "Started, but not yet Complete";
+					   			reviewIcon = "<span class=\"glyphicon glyphicon-cog\" title=\"Started, but not yet Complete\"></span>";
+					   		}
+					   		if(value.IsCompleteFlag.toString() === "Y"){
+					   			reviewProgress = "Complete, and awaiting Result";
+					   			reviewIcon = "<span class=\"glyphicon glyphicon-time\" title=\"Complete, and awaiting Result\"></span>";
+					   		}
+				   		}
+				   		else {
+					   		// Hard coded to say Complete per phone call with Alex
+					   		//reviewProgress = value.ReviewStatus.toString();
+					   		reviewProgress = "Complete";
+					   		reviewIconTagText = "glyphicon glyphicon-ok";
+					   		// Removed per phone call with Alex
+					   		// if(reviewProgress === "Refusal"){
+					   		// 	reviewIconTagText = "glyphicon glyphicon-remove";
+					   		// }
+				   		reviewIcon = "<span class=\""+reviewIconTagText+"\" title=\""+reviewProgress+"\"></span>";
+				   	}
+				  	reviewsData += reviewIcon + " " + value.ReviewType.toString() + "<br>"; // + " : " +reviewProgress + "<br>"; //= value.ReviewResult.Code;
+				  	
+					}
+				});
+				$('#reviewsText').html(reviewsData);
+
     		},
     		error: function() {
         		// Show some error message, couldn't get the CSV file
         		console.log('Could not access contents of reviews CSV file.')
     		}
-		});
-
-
-		$.ajax({
-			url: "https://permitapidev.cityofboston.gov:4443/api/building/applicationinfo/"+permitID,
-			type: "GET",
-			dataType: "json",
-			success: function (reviews) {
-				console.log(reviews);
-				//console.log(reviewsData);
-				$.each( reviews.Reviews, function( key, value ) {
-				   if(value.ReviewResult.Code === " ") {
-				   		reviewProgress = "Not yet Assigned";
-				   		reviewIcon = "<span class=\"glyphicon glyphicon-ban-circle\" title=\"Not yet Assigned\"></span>";
-				   		if(value.IsAssigned === "Y"){
-				   			reviewProgress = "Assigned, but not Started";
-				   			reviewIcon = "<span class=\"glyphicon glyphicon-minus\" title=\"Assigned, but not Started\"></span>";
-				   		}
-				   		if(value.IsStarted === "Y"){
-				   			reviewProgress = "Started, but not yet Complete";
-				   			reviewIcon = "<span class=\"glyphicon glyphicon-cog\" title=\"Started, but not yet Complete\"></span>";
-				   		}
-				   		if(value.IsComplete === "Y"){
-				   			reviewProgress = "Complete, and awaiting Result";
-				   			reviewIcon = "<span class=\"glyphicon glyphicon-time\" title=\"Complete, and awaiting Result\"></span>";
-				   		}
-				   }
-				   else {
-				   		reviewProgress = value.ReviewResult.Code;
-				   		reviewIconTagText = "glyphicon glyphicon-ok";
-				   		if(reviewProgress === "Refusal"){
-				   			reviewIconTagText = "glyphicon glyphicon-remove";
-				   		}
-				   		reviewIcon = "<span class=\""+reviewIconTagText+"\" title=\""+reviewProgress+"\"></span>";
-				   }
-				   	console.log(value);
-				  	reviewsData += reviewIcon + " " + value.ReviewType.Description + "<br>"; // + " : " +reviewProgress + "<br>"; //= value.ReviewResult.Code;
-				  	
-				  	
-				});
-				$('#reviewsText').html(reviewsData);
-			}
 		});
 }

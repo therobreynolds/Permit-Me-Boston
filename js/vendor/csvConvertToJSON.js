@@ -51,6 +51,8 @@ var csvjson = {};
 
     var csvlines = csvdata.split("\n");
     var csvheaders = splitCSV(csvlines[0], delim);
+    // remove the outside quotes from the last field
+    csvheaders[csvheaders.length-1] = csvheaders[csvheaders.length-1].substring(1,csvheaders[csvheaders.length-1].length-2);
     var csvrows = csvlines.slice(1, csvlines.length);
 
     if (!header) {
@@ -67,6 +69,8 @@ var csvjson = {};
       if (csvrows.hasOwnProperty(r)) {
         var row = csvrows[r];
         var rowitems = splitCSV(row, delim);
+        // remove outside quotes from the last field
+        rowitems[rowitems.length-1] = rowitems[rowitems.length-1].substring(1,rowitems[rowitems.length-1].length-2);
 
         // Break if we're at the end of the file
         if(row.length == 0) break;
