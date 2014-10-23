@@ -72,48 +72,43 @@ $(document).ready(function() {
 		});
 		//getMilestonesFunction(appData);
 		outputReviewsFunction(id);
-		var permitDataElements = getDataElements(id);
-		console.log("data elements");
-		console.log(permitDataElements);
 
 	} else {
 		$('#noInputWarning').html("<strong text-align=\"left\">Please enter a valid permit number.  Once submitted, please allow a few seconds for the page content to load.</strong>");
 	}
 })
 // Gets the extra data elements, formats them, and outputs them into various tags on the details page
-function getDataElements(permitID){
-		$.ajax("https://s3.amazonaws.com/permit-tracker-9000/source_files/DataElementExport.csv", {
-    		success: function(data) {
-        		var dataElementsJsonObject = csvjson.csv2json(data);
-        		console.log(dataElementsJsonObject);
-        		//console.log(padZipcodeToFive(dataElementsJsonObject.rows[1].Zip));
-        		// look through the dataElementsJsonObject to get the index of the record that pertains to the permitID
-        		var count = 0;
-        		$.each(dataElementsJsonObject.rows, function(key,value){
-        			if(value.PermitNumber.toString() === permitID){
-        				return false;
-        			}
-        			count++;
-        		});
-        		//console.log(dataElementsJsonObject.rows[count]);
-        		var permitDataElements = {
-        			"State": dataElementsJsonObject.rows[count].State.toString(),
-        			"Zip": padZipcodeToFive(dataElementsJsonObject.rows[count].Zip).toString()
-        		};
-        		// pad the Zipcode up to 5 with leading 0's
-        		//permitDataElements.Zip = padZipcodeToFive(permitDataElements.Zip);
-        		console.log("zip data elements");
-				console.log(permitDataElements);
-        		//return permitDataElements;
+function outputDataElements(permitID){
+	$.ajax("https://s3.amazonaws.com/permit-tracker-9000/source_files/DataElementExport.csv", {
+		success: function(data) {
+    		var dataElementsJsonObject = csvjson.csv2json(data);
+    		console.log(dataElementsJsonObject);
+    		//console.log(padZipcodeToFive(dataElementsJsonObject.rows[1].Zip));
+    		// look through the dataElementsJsonObject to get the index of the record that pertains to the permitID
+    		var count = 0;
+    		$.each(dataElementsJsonObject.rows, function(key,value){
+    			if(value.PermitNumber.toString() === permitID){
+    				return false;
+    			}
+    			count++;
+    		});
+    		//console.log(dataElementsJsonObject.rows[count]);
+    		var permitDataElements = {
+    			"State": dataElementsJsonObject.rows[count].State.toString(),
+    			"Zip": padZipcodeToFive(dataElementsJsonObject.rows[count].Zip).toString()
+    		};
+    		// pad the Zipcode up to 5 with leading 0's
+    		//permitDataElements.Zip = padZipcodeToFive(permitDataElements.Zip);
+    		console.log("zip data elements");
+			console.log(permitDataElements);
+    		return permitDataElements;
 
-    		},
-    		error: function() {
-        		// Show some error message, couldn't get the CSV file
-        		console.log('Could not access contents of data elements CSV file.')
-    		}
-		});
-		return permitDataElements;
-
+		},
+		error: function() {
+    		// Show some error message, couldn't get the CSV file
+    		console.log('Could not access contents of data elements CSV file.')
+		}
+	});
 }
 // since all of the Zip codes near Boston, MA begin with a 0, this function ensures they all retain their leading 0.
 function padZipcodeToFive(zipcode) {
