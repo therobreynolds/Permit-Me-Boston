@@ -23,6 +23,31 @@ h2 {
 	text-align: center;
 }
 
+#fireIntakePaymentStatusLbl {
+	font-size: 10pt;
+	text-align: center;
+}
+
+#firePermitReviewStatusLbl {
+	font-size: 10pt;
+	text-align: center;
+}
+
+#fireIssuanceStatusLbl {
+	font-size: 10pt;
+	text-align: center;
+}
+
+#fireInspectionsStatusLbl {
+	font-size: 10pt;
+	text-align: center;
+}
+
+#fireCompletedStatusLbl {
+	font-size: 10pt;
+	text-align: center;
+}
+
 #descriptionLbl {
 	text-align: left;
 	margin-top: 10px;

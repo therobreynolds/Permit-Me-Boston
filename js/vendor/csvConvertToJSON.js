@@ -39,7 +39,8 @@ var csvjson = {};
    * @param args.textdelim {string} The delimiter used to wrap text in
    *  the CSV data. Defaults to nothing (an empty string).
    */
-  csvjson.csv2json = function(csvdata, args) {
+  // with quotes
+  csvjson.csv2jsonQUOTES = function(csvdata, args) {
     args = args || {};
     var delim = isdef(args.delim) ? args.delim : ",";
       var header = isdef(args.header) ? args.header : true;
@@ -95,6 +96,60 @@ var csvjson = {};
 
     return ret;
   } // end csv2json
+//without quotes
+  csvjson.csv2json = function(csvdata, args) {
+    args = args || {};
+    var delim = isdef(args.delim) ? args.delim : ",";
+      var header = isdef(args.header) ? args.header : true;
+    // Unused
+    //var textdelim = isdef(args.textdelim) ? args.textdelim : "";
+
+        // normalize line breaks before continue
+        csvdata.replace(/\x0A\x0D/g, '\n').replace(/\x0D/g, '\n');
+
+    var csvlines = csvdata.split("\n");
+    var csvheaders = splitCSV(csvlines[0], delim);
+    var csvrows = csvlines.slice(1, csvlines.length);
+
+    if (!header) {
+      for (var i = 0; i < csvheaders.length; i++) {
+        csvheaders[i] = i;
+      };
+    }
+
+    var ret = {};
+    ret.headers = csvheaders;
+    ret.rows = [];
+
+    for(var r in csvrows) {
+      if (csvrows.hasOwnProperty(r)) {
+        var row = csvrows[r];
+        var rowitems = splitCSV(row, delim);
+        
+        // Break if we're at the end of the file
+        if(row.length == 0) break;
+
+        var rowob = {};
+        for(var i in rowitems) {
+          if (rowitems.hasOwnProperty(i)) {
+            var item = rowitems[i];
+
+            // Try to (intelligently) cast the item to a number, if applicable
+            if(!isNaN(item*1)) {
+              item = item*1;
+            }
+
+            rowob[csvheaders[i]] = item;
+          }
+        }
+
+        ret.rows.push(rowob);
+      }
+    }
+
+    return ret;
+  } // end csv2json
+
 
   /**
    * Taken an object of the form
