@@ -23,6 +23,41 @@ h2 {
 	text-align: center;
 }
 
+#buildingIntakePaymentStatusLbl {
+	font-size: 10pt;
+	text-align: center;
+}
+
+#buildingProjectReviewStatusLbl {
+	font-size: 10pt;
+	text-align: center;
+}
+
+#buildingZoningReviewStatusLbl {
+	font-size: 10pt;
+	text-align: center;
+}
+
+#buildingIssuanceStatusLbl {
+	font-size: 10pt;
+	text-align: center;
+}
+
+#buildingInspectionsStatusLbl {
+	font-size: 10pt;
+	text-align: center;
+}
+
+#buildingOccupancyStatusLbl {
+	font-size: 10pt;
+	text-align: center;
+}
+
+#buildingCompletedStatusLbl {
+	font-size: 10pt;
+	text-align: center;
+}
+
 #fireIntakePaymentStatusLbl {
 	font-size: 10pt;
 	text-align: center;
