@@ -1,121 +1,221 @@
 $(document).ready(function() {
+	// Get the permit number from the url of the page
 	var id = location.search.replace('?', '').split('=')[1];
-	var appData;
-	// var reviewsData = "";
-	var reviewProgress = "";
-	var reviewIcon = "";
-	var defaultDuration = "";
-	var currentDate = new Date();
-	var addressName = "";
-	var allAddresses = "";
-	var streetAddress = "";
-
-	// only if an ID is given
-	//alert(id);
+	// If an permit number is present, begin to get data
 	if(id) {
-		// get overall info
-		$.ajax({
-			url: "https://permitapidev.cityofboston.gov:4443/api/building/applicationinfo/"+id,
-			type: "GET",
-			dataType: "json",
-			success: function (data) {
-				console.log(data);
-				appData = data;
-				//$('#statusOnDateLbl').html("Permit <i><b>#" + id + "</b></i> is in the <i><b>" + data.ProcessState.Code + "</b></i> phase as of " + (currentDate.getMonth()+1)+"/"+currentDate.getDate()+"/"+currentDate.getFullYear() + ".");
-				//$('#statusLbl').text(data.ProcessState.Code);
-				//get the addresses of the applicants
-				$.each( data.Applicants, function( key, value ){
-					if(value.Contact.Identity.FullName === null){
-						addressName = value.Contact.Identity.LastName;
-					} else {
-						addressName = value.Contact.Identity.FullName;
-					}
-					if(value.Contact.Address2 !== null){
-						streetAddress = value.Contact.Address1+"<br>"+value.Contact.Address2;
-					} else {
-						streetAddress = value.Contact.Address1;
-					}
-					allAddresses += "<address>"+"<strong>"+addressName+"</strong>"+"<br>"+streetAddress+"<br>"+value.Contact.City+", "+value.Contact.State+" "+value.Contact.Zip+"</address>";
-				});
-				$('#addressInfo').html(allAddresses);
-				$('#permitInfoText').html(data.ApplicationType.Description + "<br>" + "<u>Comments:</u>" + "<br>" + data.Comments);
-
-				//get milestone data based on the returned result of the initial REST query
-				$.ajax({
-					url: "http://http://rawgit.com/therobreynolds/Permit-Me-Boston/master/json/ALT327257.xml",
-					//url: "json/milestones.json",
-					type: "GET",
-					dataType: "xml",
-					success: function (milestones) {
-						$.each( milestones, function( key, value ) {
-							if(value.Milestone === appData.ProcessState.Code) {
-							  	console.log(value);
-							  	$('#statusLbl').text(value.Status);
-							  	$('#descriptionLbl').html("description goes here.");//.text(value.Description);
-							  	if(value.Duration === "" || value.Duration === " "){
-							  		defaultDuration = "Duration unavailable";
-							  		$('#durationText').text(defaultDuration);
-							  	}
-							  	else {
-							  		$('#durationText').text(value.Duration);
-							  	}
-							  	$('#performingText').text(value.WhoPerforming);
-							  	$('#contactText').text(value.Contact);
-							}
-						});
-					}
-				});
-			},
-			failure: function (xqr) {
-				alert("Failed to load data!");
-			}
-		});
-		//getMilestonesFunction(appData);
-		outputReviewsFunction(id);
-		//outputDataFunction("Fire","Review",id);
-		var testArray = outputDataElements(id);
-		console.log(testArray);
-
-
+		getData(id);
 	} else {
+		//  If there is no permit number present in the url, display warning message
 		$('#noInputWarning').html("<strong text-align=\"left\">Please enter a valid permit number.  Once submitted, please allow a few seconds for the page content to load.</strong>");
 	}
 })
-// Gets the extra data elements, formats them, and outputs them into various tags on the details page
-function outputDataElements(permitID){
-	var permitDataElements = [];
-	$.ajax("https://s3.amazonaws.com/permit-tracker-9000/source_files/DataElementExport.csv", {
-		success: function(data) {
-    		var dataElementsJsonObject = csvjson.csv2jsonQUOTES(data);
-    		console.log(dataElementsJsonObject);
-    		//console.log(padZipcodeToFive(dataElementsJsonObject.rows[1].Zip));
-    		// look through the dataElementsJsonObject to get the index of the record that pertains to the permitID
-    		var count = 0;
-    		$.each(dataElementsJsonObject.rows, function(key,value){
-    			if(value.PermitNumber.toString() === permitID){
-    				return false;
-    			}
-    			count++;
-    		});
-    		//console.log(dataElementsJsonObject.rows[count]);
-    		permitDataElements["State"] = dataElementsJsonObject.rows[count].State.toString();
-    		permitDataElements["Zip"] = padZipcodeToFive(dataElementsJsonObject.rows[count].Zip).toString();
-    		
-    		// pad the Zipcode up to 5 with leading 0's
-    		//permitDataElements.Zip = padZipcodeToFive(permitDataElements.Zip);
-    		console.log("zip data elements");
-			console.log(permitDataElements);
-    		//return permitDataElements;
-    		var testReturn = outputDataFunction(dataElementsJsonObject.rows[count].BuildingOrFire.toString(),"Review",permitID);
-
-		},
-		error: function() {
-    		// Show some error message, couldn't get the CSV file
-    		console.log('Could not access contents of data elements CSV file.')
-		}
+// Make the calls to get the data for the given permit
+function getData(permitID){
+	$.when(
+	// Grab the data export data
+	$.getJSON('http://default-environment-iygu5qavq7.elasticbeanstalk.com/data.php?number=' + permitID, function(data) {
+	  	var dataElementsJsonObject = data;//.slice(0,1);
+	}),
+	// grab the milestone data
+	$.getJSON('http://default-environment-iygu5qavq7.elasticbeanstalk.com/milestone.php?number=' + permitID, function(data) {
+	  	var milestonesJsonObject = data;
+	}),
+	// grab the review data
+	$.getJSON('http://default-environment-iygu5qavq7.elasticbeanstalk.com/review.php?number=' + permitID, function(data) {
+	  	var reviewsJsonObject = data;
+	}),
+	// grab the buildingmilestones data
+	$.getJSON('http://default-environment-iygu5qavq7.elasticbeanstalk.com/buildingmilestonestranslated.php?number=' + permitID, function(data) {
+	  	var buildingJsonObject = data;
+	}),
+	// grab the firemilestones data
+	$.getJSON('http://default-environment-iygu5qavq7.elasticbeanstalk.com/firemilestonestranslated.php?number=' + permitID, function(data) {
+	  	var fireJsonObject = data;
+	})
+	).done(function(dataElementsJsonObject,milestonesJsonObject,reviewsJsonObject,buildingJsonObject,fireJsonObject){
+		// Call the function to display the data with the resulting json objects
+		displayData(dataElementsJsonObject,milestonesJsonObject,reviewsJsonObject,buildingJsonObject,fireJsonObject);
 	});
-	return permitDataElements;
 }
+// Use the argument json objects to fill in the data on the page
+function displayData(dataElementsJsonObject,milestonesJsonObject,reviewsJsonObject,buildingJsonObject,fireJsonObject) {
+	// Put the json objects into containers for use
+	dataElementsList = dataElementsJsonObject.slice(0,1)[0];
+	console.log(dataElementsList);
+	milestonesList = milestonesJsonObject.slice(0,1)[0];
+	console.log(milestonesList);
+	reviewsList = reviewsJsonObject.slice(0,1)[0];
+	console.log(reviewsList);
+	buildingMilestonesTranslationList = buildingJsonObject.slice(0,1)[0];
+	console.log(buildingMilestonesTranslationList);
+	fireMilestonesTranslationList = fireJsonObject.slice(0,1)[0];
+	console.log(fireMilestonesTranslationList);
+
+	// Set variables for filling in the page
+	var permitType = dataElementsList.BuildingOrFire.toString();
+	var permitID = dataElementsList.PermitNumber.toString();
+	// Put milestones in order
+	var condensedMilestonesList = new Object();
+	if(permitType === "Fire"){
+		condensedMilestonesList.IntakePayment = new Object();
+		condensedMilestonesList.PermitReview = new Object();
+		condensedMilestonesList.Issuance = new Object();
+		condensedMilestonesList.Inspections = new Object();
+		condensedMilestonesList.Completed = new Object();
+		console.log(condensedMilestonesList);
+		if(condensedMilestonesList.Completed.MilesoneStartDate){
+			console.log('not null');
+		} else {
+			console.log('nullish');
+		}
+		$.each(milestonesList, function(key,value){
+			console.log(value);
+			$.each(fireMilestonesTranslationList, function(key1,value1){
+				//console.log(value1);
+				if(value.MilestoneName === value1.Milestones){
+					console.log(value1.DisplayStatus);
+					if(value1.DisplayStatus === "Intake & Payment"){
+						if(condensedMilestonesList.MilesoneStartDate){
+							if(value.MilesoneStartDate<condensedMilestonesList.IntakePayment.MilesoneStartDate){
+								condensedMilestonesList.IntakePayment.MilesoneStartDate = new Date(value.MilestoneStartDate.toString());
+							}
+						} else {
+							condensedMilestonesList.IntakePayment.DisplayStatus = value1.DisplayStatus.toString();
+							condensedMilestonesList.IntakePayment.Description = value1.Description.toString();
+							condensedMilestonesList.IntakePayment.ExpectedDuration = value1.ExpectedDuration.toString();
+							condensedMilestonesList.IntakePayment.MilestoneStartDate = new Date(value.MilestoneStartDate.toString());
+							condensedMilestonesList.IntakePayment.ContactInfo = value1.ContactInstructions.toString();
+							condensedMilestonesList.IntakePayment.POC = value.CityContactName.toString();
+						}
+					}
+					if(value1.DisplayStatus === "Permit Review"){
+						if(condensedMilestonesList.MilesoneStartDate){
+							if(value.MilesoneStartDate<condensedMilestonesList.PermitReview.MilesoneStartDate){
+								condensedMilestonesList.PermitReview.MilesoneStartDate = new Date(value.MilestoneStartDate.toString());
+							}
+						} else {
+							condensedMilestonesList.PermitReview.DisplayStatus = value1.DisplayStatus.toString();
+							condensedMilestonesList.PermitReview.Description = value1.Description.toString();
+							condensedMilestonesList.PermitReview.ExpectedDuration = value1.ExpectedDuration.toString();
+							condensedMilestonesList.PermitReview.MilestoneStartDate = new Date(value.MilestoneStartDate.toString());
+							condensedMilestonesList.PermitReview.ContactInfo = value1.ContactInstructions.toString();
+							condensedMilestonesList.PermitReview.POC = value.CityContactName.toString();
+						}
+					}
+					if(value1.DisplayStatus === "Issuance"){
+						if(condensedMilestonesList.MilesoneStartDate){
+							if(value.MilesoneStartDate<condensedMilestonesList.Issuance.MilesoneStartDate){
+								condensedMilestonesList.Issuance.MilesoneStartDate = new Date(value.MilestoneStartDate.toString());
+							}
+						} else {
+							condensedMilestonesList.Issuance.DisplayStatus = value1.DisplayStatus.toString();
+							condensedMilestonesList.Issuance.Description = value1.Description.toString();
+							condensedMilestonesList.Issuance.ExpectedDuration = value1.ExpectedDuration.toString();
+							condensedMilestonesList.Issuance.MilestoneStartDate = new Date(value.MilestoneStartDate.toString());
+							condensedMilestonesList.Issuance.ContactInfo = value1.ContactInstructions.toString();
+							condensedMilestonesList.Issuance.POC = value.CityContactName.toString();
+						}
+					}
+					if(value1.DisplayStatus === "Inspections"){
+						if(condensedMilestonesList.MilesoneStartDate){
+							if(value.MilesoneStartDate<condensedMilestonesList.Inspections.MilesoneStartDate){
+								condensedMilestonesList.Inspections.MilesoneStartDate = new Date(value.MilestoneStartDate.toString());
+							}
+						} else {
+							condensedMilestonesList.Inspections.DisplayStatus = value1.DisplayStatus.toString();
+							condensedMilestonesList.Inspections.Description = value1.Description.toString();
+							condensedMilestonesList.Inspections.ExpectedDuration = value1.ExpectedDuration.toString();
+							condensedMilestonesList.Inspections.MilestoneStartDate = new Date(value.MilestoneStartDate.toString());
+							condensedMilestonesList.Inspections.ContactInfo = value1.ContactInstructions.toString();
+							condensedMilestonesList.Inspections.POC = value.CityContactName.toString();
+						}
+					}
+					if(value1.DisplayStatus === "Completed"||value1.DisplayStatus === "Revoked"||value1.DisplayStatus === "Abandoned"||value1.DisplayStatus === "** NOT USED **"){
+						if(condensedMilestonesList.MilesoneStartDate){
+							if(value.MilesoneStartDate<condensedMilestonesList.Completed.MilesoneStartDate){
+								condensedMilestonesList.Completed.MilesoneStartDate = new Date(value.MilestoneStartDate.toString());
+							}
+						} else {
+							condensedMilestonesList.Completed.DisplayStatus = value1.DisplayStatus.toString();
+							condensedMilestonesList.Completed.Description = value1.Description.toString();
+							condensedMilestonesList.Completed.ExpectedDuration = value1.ExpectedDuration.toString();
+							condensedMilestonesList.Completed.MilestoneStartDate = new Date(value.MilestoneStartDate.toString());
+							condensedMilestonesList.Completed.ContactInfo = value1.ContactInstructions.toString();
+							condensedMilestonesList.Completed.POC = value.CityContactName.toString();
+						}
+					}
+				}
+			});
+			console.log(condensedMilestonesList);
+		});
+		// Determine the current Milestone and if a milestone has been skipped.
+		var currentMilestone = "";
+		var milestoneSkipped = ["N","N","N","N","N"];
+		if(condensedMilestonesList.Completed.DisplayStatus){
+			currentMilestone = condensedMilestonesList.Completed.DisplayStatus;
+		} else {
+			if(condensedMilestonesList.Inspections.DisplayStatus){
+				if(currentMilestone === ""){
+					currentMilestone = condensedMilestonesList.Inspections.DisplayStatus;
+				}
+				$('#fireInspectionsStatusLbl').html(condensedMilestonesList.Inspections.DisplayStatus+"<br>"
+					+"Started On: "+(condensedMilestonesList.Inspections.MilestoneStartDate.getMonth()+1)+"/"+condensedMilestonesList.Inspections.MilestoneStartDate.getDate()+"/"+condensedMilestonesList.Inspections.MilestoneStartDate.getFullYear());
+			} else {
+				if(condensedMilestonesList.Completed.DisplayStatus){
+					milestoneSkipped[3] = "Y";
+					$('#fireInspectionsStatusLbl').html("Inspections<br>N/A");
+				}
+			}
+			if(condensedMilestonesList.Issuance.DisplayStatus){
+				if(currentMilestone === ""){
+					currentMilestone = condensedMilestonesList.Issuance.DisplayStatus;
+				}
+				$('#fireIssuanceStatusLbl').html(condensedMilestonesList.Issuance.DisplayStatus+"<br>"
+					+"Started On: "+(condensedMilestonesList.Issuance.MilestoneStartDate.getMonth()+1)+"/"+condensedMilestonesList.Issuance.MilestoneStartDate.getDate()+"/"+condensedMilestonesList.Issuance.MilestoneStartDate.getFullYear());
+			} else {
+				if(condensedMilestonesList.Completed.DisplayStatus || condensedMilestonesList.Inspections.DisplayStatus){
+					milestoneSkipped[2] = "Y";
+					$('#fireIssuanceStatusLbl').html("Issuance<br>N/A");
+				}
+			}
+			if(condensedMilestonesList.PermitReview.DisplayStatus){
+				if(currentMilestone === ""){
+					currentMilestone = condensedMilestonesList.PermitReview.DisplayStatus;
+				}
+				$('#firePermitReviewStatusLbl').html(condensedMilestonesList.PermitReview.DisplayStatus+"<br>"
+					+"Started On: "+(condensedMilestonesList.PermitReview.MilestoneStartDate.getMonth()+1)+"/"+condensedMilestonesList.PermitReview.MilestoneStartDate.getDate()+"/"+condensedMilestonesList.PermitReview.MilestoneStartDate.getFullYear());
+			} else {
+				if(condensedMilestonesList.Completed.DisplayStatus || condensedMilestonesList.Inspections.DisplayStatus || condensedMilestonesList.Issuance.DisplayStatus){
+					milestoneSkipped[1] = "Y";
+					$('#firePermitReviewStatusLbl').html("Permit Review<br>N/A");
+				}
+			}
+			if(condensedMilestonesList.IntakePayment.DisplayStatus){
+				if(currentMilestone === ""){
+					currentMilestone = condensedMilestonesList.IntakePayment.DisplayStatus;
+				}
+				$('#fireIntakePaymentStatusLbl').html(condensedMilestonesList.IntakePayment.DisplayStatus+"<br>"
+					+"Started On: "+(condensedMilestonesList.IntakePayment.MilestoneStartDate.getMonth()+1)+"/"+condensedMilestonesList.IntakePayment.MilestoneStartDate.getDate()+"/"+condensedMilestonesList.IntakePayment.MilestoneStartDate.getFullYear());
+			} else {
+				if(condensedMilestonesList.Completed.DisplayStatus || condensedMilestonesList.Inspections.DisplayStatus|| condensedMilestonesList.Issuance.DisplayStatus || condensedMilestonesList.PermitReview.DisplayStatus){
+					milestoneSkipped[0] = "Y";
+					$('#fireIntakePaymentStatusLbl').html("Intake & Payment<br>N/A");
+				}
+			}
+		}
+		console.log('currentMilestone');
+		console.log(currentMilestone);
+		console.log(milestoneSkipped);
+	} else {
+
+	}
+	showProgress(permitType,currentMilestone,permitID,milestoneSkipped);
+
+	// Start filling in the data elements on the page
+
+
+}
+
 // since all of the Zip codes near Boston, MA begin with a 0, this function ensures they all retain their leading 0.
 function padZipcodeToFive(zipcode) {
  		if (zipcode<=99999) { 
@@ -181,168 +281,124 @@ function outputReviewsFunction(permitID){
 		});
 }
 
-// Loads the Milestones file and calls the outputDataFunction
-
-//  Need to figure out a way to translate the milestone name to the generic
-function loadMilestonesFile(){
-	// get the milestone data from csv file
-			$.ajax("https://s3.amazonaws.com/permit-tracker-9000/source_files/MilestoneExport.csv", {
-    		success: function(data) {
-        		var milestonesJsonObject = csvjson.csv2jsonQUOTES(data);
-        		console.log(milestonesJsonObject);
-        		// Now use jsonobject to do some charting...
-				// $.each(milestonesJsonObject.rows, function(key,value){
-
-				// });
-
-    		},
-    		error: function() {
-        		// Show some error message, couldn't get the CSV file
-        		console.log('Could not access contents of milestones CSV file.')
-    		}
-		});
-}
-
 // Gets the Reviews data, formats it and outputs it to the #reviewsText tag on the details page
-function outputDataFunction(permitType,milestone,permitID){
+function showProgress(permitType,currentMilestone,permitID,milestoneSkipped){
 	// Initialize variables
 	var currentDate = new Date();
-	// console.log(permitType);
-	// console.log(milestone);
-	//get Milestones info for Building permits
+	$('#statusOnDateLbl').html("Permit <i><b>#" + permitID + "</b></i> is in the <i><b>" + currentMilestone + "</b></i> phase as of " + (currentDate.getMonth()+1)+"/"+currentDate.getDate()+"/"+currentDate.getFullYear() + ".");
+	// For Building permits
 	if(permitType === "Building"){
-		$.ajax("https://s3.amazonaws.com/permit-tracker-9000/source_files/BuildingMilestonesTranslated.csv", {
-    		success: function(data) {
-        		var buildingJsonObject = csvjson.csv2json(data);
-        		console.log(buildingJsonObject);
-        		// Now use jsonobject to do some charting...
-				$.each(buildingJsonObject.rows, function(key,value){
-					console.log(value);
-				});
-    		},
-    		error: function() {
-        		// Show some error message, couldn't get the CSV file
-        		console.log('Could not access contents of building milestones CSV file.')
-    		}
-		});
+
 	}
-	//get Milestones info for Fire permits
+	// For Fire permits
 	if(permitType === "Fire"){
-		$.ajax("https://s3.amazonaws.com/permit-tracker-9000/source_files/FireMilestonesTranslated.csv", {
-    		success: function(data) {
-        		var fireJsonObject = csvjson.csv2json(data);
-        		console.log(fireJsonObject);
-        		// Now use jsonobject to do some charting...
-				var currentMilestone = "";
-				$.each(fireJsonObject.rows, function(key,value){
-					console.log(value);
-					if(value.Milestone.toString()===milestone){
-						currentMilestone = value.DisplayStatus.toString();
-						$('#statusOnDateLbl').html("Permit <i><b>#" + permitID + "</b></i> is in the <i><b>" + currentMilestone + "</b></i> phase as of " + (currentDate.getMonth()+1)+"/"+currentDate.getDate()+"/"+currentDate.getFullYear() + ".");
-						$('#descriptionLbl').text(value.Description.toString());
-						return false;
-					}
-				});
-				console.log(currentMilestone);
-				if(currentMilestone==="Intake & Payment"){
-					// Make the current box turn yellow
-					$('#fireIntakePaymentStatusLbl').removeClass("alert alert-info");
-					$('#fireIntakePaymentStatusLbl').addClass("alert alert-warning");
+		console.log(currentMilestone);
+		if(currentMilestone==="Intake & Payment"){
+			// Make the current box turn yellow
+			$('#fireIntakePaymentStatusLbl').removeClass("alert alert-info");
+			$('#fireIntakePaymentStatusLbl').addClass("alert alert-warning");
 
-					// Make the subsequent boxes turn red
-					$('#firePermitReviewStatusLbl').removeClass("alert alert-info");
-					$('#firePermitReviewStatusLbl').addClass("alert alert-danger");
+			// Make the subsequent boxes turn red
+			$('#firePermitReviewStatusLbl').removeClass("alert alert-info");
+			$('#firePermitReviewStatusLbl').addClass("alert alert-danger");
 
-					$('#fireIssuanceStatusLbl').removeClass("alert alert-info");
-					$('#fireIssuanceStatusLbl').addClass("alert alert-danger");
+			$('#fireIssuanceStatusLbl').removeClass("alert alert-info");
+			$('#fireIssuanceStatusLbl').addClass("alert alert-danger");
 
-					$('#fireInspectionsStatusLbl').removeClass("alert alert-info");
-					$('#fireInspectionsStatusLbl').addClass("alert alert-danger");
+			$('#fireInspectionsStatusLbl').removeClass("alert alert-info");
+			$('#fireInspectionsStatusLbl').addClass("alert alert-danger");
 
-					$('#fireCompletedStatusLbl').removeClass("alert alert-info");
-					$('#fireCompletedStatusLbl').addClass("alert alert-danger");
-				}
-				if(currentMilestone==="Permit Review"){
-					// Make the previous boxes turn green
-					$('#fireIntakePaymentStatusLbl').removeClass("alert alert-info");
-					$('#fireIntakePaymentStatusLbl').addClass("alert alert-success");
+			$('#fireCompletedStatusLbl').removeClass("alert alert-info");
+			$('#fireCompletedStatusLbl').addClass("alert alert-danger");
+		}
+		if(currentMilestone==="Permit Review"){
+			// Make the previous boxes turn green
+			if(milestoneSkipped[0]!="Y"){
+				$('#fireIntakePaymentStatusLbl').removeClass("alert alert-info");
+				$('#fireIntakePaymentStatusLbl').addClass("alert alert-success");
+			}
 
-					// Make the current box turn yellow
-					$('#firePermitReviewStatusLbl').removeClass("alert alert-info");
-					$('#firePermitReviewStatusLbl').addClass("alert alert-warning");
+			// Make the current box turn yellow
+			$('#firePermitReviewStatusLbl').removeClass("alert alert-info");
+			$('#firePermitReviewStatusLbl').addClass("alert alert-warning");
 
-					// Make the subsequent boxes turn red
-					$('#fireIssuanceStatusLbl').removeClass("alert alert-info");
-					$('#fireIssuanceStatusLbl').addClass("alert alert-danger");
+			// Make the subsequent boxes turn red
+			$('#fireIssuanceStatusLbl').removeClass("alert alert-info");
+			$('#fireIssuanceStatusLbl').addClass("alert alert-danger");
 
-					$('#fireInspectionsStatusLbl').removeClass("alert alert-info");
-					$('#fireInspectionsStatusLbl').addClass("alert alert-danger");
+			$('#fireInspectionsStatusLbl').removeClass("alert alert-info");
+			$('#fireInspectionsStatusLbl').addClass("alert alert-danger");
 
-					$('#fireCompletedStatusLbl').removeClass("alert alert-info");
-					$('#fireCompletedStatusLbl').addClass("alert alert-danger");
-				}
-				if(currentMilestone === "Issuance"){
-					// Make the previous boxes turn green
-					$('#fireIntakePaymentStatusLbl').removeClass("alert alert-info");
-					$('#fireIntakePaymentStatusLbl').addClass("alert alert-success");
+			$('#fireCompletedStatusLbl').removeClass("alert alert-info");
+			$('#fireCompletedStatusLbl').addClass("alert alert-danger");
+		}
+		if(currentMilestone === "Issuance"){
+			// Make the previous boxes turn green
+			if(milestoneSkipped[0]!="Y"){
+				$('#fireIntakePaymentStatusLbl').removeClass("alert alert-info");
+				$('#fireIntakePaymentStatusLbl').addClass("alert alert-success");
+			}
+			
+			if(milestoneSkipped[1]!="Y"){
+				$('#firePermitReviewStatusLbl').removeClass("alert alert-info");
+				$('#firePermitReviewStatusLbl').addClass("alert alert-success");
+			}
+			
+			// Make the current box turn yellow
+			$('#fireIssuanceStatusLbl').removeClass("alert alert-info");
+			$('#fireIssuanceStatusLbl').addClass("alert alert-warning");
 
-					$('#firePermitReviewStatusLbl').removeClass("alert alert-info");
-					$('#firePermitReviewStatusLbl').addClass("alert alert-success");
+			// Make the subsequent boxes turn red
+			$('#fireInspectionsStatusLbl').removeClass("alert alert-info");
+			$('#fireInspectionsStatusLbl').addClass("alert alert-danger");
 
-					// Make the current box turn yellow
-					$('#fireIssuanceStatusLbl').removeClass("alert alert-info");
-					$('#fireIssuanceStatusLbl').addClass("alert alert-warning");
+			$('#fireCompletedStatusLbl').removeClass("alert alert-info");
+			$('#fireCompletedStatusLbl').addClass("alert alert-danger");
+		}
+		if(currentMilestone === "Inspections"){
+			// Make the previous boxes turn green
+			if(milestoneSkipped[0]!="Y"){
+				$('#fireIntakePaymentStatusLbl').removeClass("alert alert-info");
+				$('#fireIntakePaymentStatusLbl').addClass("alert alert-success");
+			}
+			
+			if(milestoneSkipped[1]!="Y"){
+				$('#firePermitReviewStatusLbl').removeClass("alert alert-info");
+				$('#firePermitReviewStatusLbl').addClass("alert alert-success");
+			}
 
-					// Make the subsequent boxes turn red
-					$('#fireInspectionsStatusLbl').removeClass("alert alert-info");
-					$('#fireInspectionsStatusLbl').addClass("alert alert-danger");
+			if(milestoneSkipped[2]!="Y"){
+				$('#fireIssuanceStatusLbl').removeClass("alert alert-info");
+				$('#fireIssuanceStatusLbl').addClass("alert alert-success");
+			}
+			
+			// Make the current box turn yellow
+			$('#fireInspectionsStatusLbl').removeClass("alert alert-info");
+			$('#fireInspectionsStatusLbl').addClass("alert alert-warning");
 
-					$('#fireCompletedStatusLbl').removeClass("alert alert-info");
-					$('#fireCompletedStatusLbl').addClass("alert alert-danger");
-				}
-				if(currentMilestone === "Inspections"){
-					// Make the previous boxes turn green
-					$('#fireIntakePaymentStatusLbl').removeClass("alert alert-info");
-					$('#fireIntakePaymentStatusLbl').addClass("alert alert-success");
+			// Make the subsequent boxes turn red
+			$('#fireCompletedStatusLbl').removeClass("alert alert-info");
+			$('#fireCompletedStatusLbl').addClass("alert alert-danger");
+		}
+		if(currentMilestone === "Revoked" || currentMilestone === "Abandoned" || currentMilestone === "Completed"){
+			// Make all the boxes turn green
+			$('#fireIntakePaymentStatusLbl').removeClass("alert alert-info");
+			$('#fireIntakePaymentStatusLbl').addClass("alert alert-success");
 
-					$('#firePermitReviewStatusLbl').removeClass("alert alert-info");
-					$('#firePermitReviewStatusLbl').addClass("alert alert-success");
+			$('#firePermitReviewStatusLbl').removeClass("alert alert-info");
+			$('#firePermitReviewStatusLbl').addClass("alert alert-success");
 
-					$('#fireIssuanceStatusLbl').removeClass("alert alert-info");
-					$('#fireIssuanceStatusLbl').addClass("alert alert-success");
+			$('#fireIssuanceStatusLbl').removeClass("alert alert-info");
+			$('#fireIssuanceStatusLbl').addClass("alert alert-success");
 
-					// Make the current box turn yellow
-					$('#fireInspectionsStatusLbl').removeClass("alert alert-info");
-					$('#fireInspectionsStatusLbl').addClass("alert alert-warning");
+			$('#fireInspectionsStatusLbl').removeClass("alert alert-info");
+			$('#fireInspectionsStatusLbl').addClass("alert alert-success");
 
-					// Make the subsequent boxes turn red
-					$('#fireCompletedStatusLbl').removeClass("alert alert-info");
-					$('#fireCompletedStatusLbl').addClass("alert alert-danger");
-				}
-				if(currentMilestone === "Revoked" || currentMilestone === "Abandoned" || currentMilestone === "Completed"){
-					// Make all the boxes turn green
-					$('#fireIntakePaymentStatusLbl').removeClass("alert alert-info");
-					$('#fireIntakePaymentStatusLbl').addClass("alert alert-success");
-
-					$('#firePermitReviewStatusLbl').removeClass("alert alert-info");
-					$('#firePermitReviewStatusLbl').addClass("alert alert-success");
-
-					$('#fireIssuanceStatusLbl').removeClass("alert alert-info");
-					$('#fireIssuanceStatusLbl').addClass("alert alert-success");
-
-					$('#fireInspectionsStatusLbl').removeClass("alert alert-info");
-					$('#fireInspectionsStatusLbl').addClass("alert alert-success");
-
-					$('#fireCompletedStatusLbl').removeClass("alert alert-info");
-					$('#fireCompletedStatusLbl').addClass("alert alert-success");	
-				}
-				
-    		},
-    		error: function() {
-        		// Show some error message, couldn't get the CSV file
-        		console.log('Could not access contents of fire milestones CSV file.')
-    		}
-		});
+			$('#fireCompletedStatusLbl').removeClass("alert alert-info");
+			$('#fireCompletedStatusLbl').addClass("alert alert-success");	
+		}
+		// Fix Skipped Milestones
+		if(milestoneSkipped[0]==="Y"){}		
 	}
 	else {
 		console.log('Invalid Permit Type submitted.');
