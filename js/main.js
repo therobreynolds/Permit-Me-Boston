@@ -2,7 +2,7 @@ $(document).ready(function() {
 	$('#submitBtn').click(function() {
 		var permitNumber = "";
 		permitNumber = $('#permitTxt').val().toString();
-		$.getJSON('http://default-environment-iygu5qavq7.elasticbeanstalk.com/data.php?number=' + permitNumber, function(data) {
+		$.getJSON('https://default-environment-iygu5qavq7.elasticbeanstalk.com/data.php?number=' + permitNumber, function(data) {
 			// Get the permit type to know how to redirect
 			var permitTypeIndicator = data.BuildingOrFire.toString();
 	    		if(permitTypeIndicator === "Fire"){
