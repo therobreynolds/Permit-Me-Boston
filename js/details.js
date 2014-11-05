@@ -1,35 +1,37 @@
-$(document).ready(function() {
+$(document).ready(function() {	
 	// Get the permit number from the url of the page
 	var id = location.search.replace('?', '').split('=')[1];
 	// If an permit number is present, begin to get data
 	if(id) {
+		$('#load').show();
 		getData(id);
 	} else {
 		//  If there is no permit number present in the url, display warning message
 		$('#noInputWarning').html("<strong text-align=\"left\">Please enter a valid permit number.  Once submitted, please allow a few seconds for the page content to load.</strong>");
 	}
+	
 })
 // Make the calls to get the data for the given permit
 function getData(permitID){
 	$.when(
 	// Grab the data export data
-	$.getJSON('https://default-environment-iygu5qavq7.elasticbeanstalk.com/data.php?number=' + permitID, function(data) {
+	$.getJSON('http://default-environment-iygu5qavq7.elasticbeanstalk.com/data.php?number=' + permitID, function(data) {
 	  	var dataElementsJsonObject = data;//.slice(0,1);
 	}),
 	// grab the milestone data
-	$.getJSON('https://default-environment-iygu5qavq7.elasticbeanstalk.com/milestone.php?number=' + permitID, function(data) {
+	$.getJSON('http://default-environment-iygu5qavq7.elasticbeanstalk.com/milestone.php?number=' + permitID, function(data) {
 	  	var milestonesJsonObject = data;
 	}),
 	// grab the review data
-	$.getJSON('https://default-environment-iygu5qavq7.elasticbeanstalk.com/review.php?number=' + permitID, function(data) {
+	$.getJSON('http://default-environment-iygu5qavq7.elasticbeanstalk.com/review.php?number=' + permitID, function(data) {
 	  	var reviewsJsonObject = data;
 	}),
 	// grab the buildingmilestones data
-	$.getJSON('https://default-environment-iygu5qavq7.elasticbeanstalk.com/buildingmilestonestranslated.php?number=' + permitID, function(data) {
+	$.getJSON('http://default-environment-iygu5qavq7.elasticbeanstalk.com/buildingmilestonestranslated.php?number=' + permitID, function(data) {
 	  	var buildingJsonObject = data;
 	}),
 	// grab the firemilestones data
-	$.getJSON('https://default-environment-iygu5qavq7.elasticbeanstalk.com/firemilestonestranslated.php?number=' + permitID, function(data) {
+	$.getJSON('http://default-environment-iygu5qavq7.elasticbeanstalk.com/firemilestonestranslated.php?number=' + permitID, function(data) {
 	  	var fireJsonObject = data;
 	})
 	).done(function(dataElementsJsonObject,milestonesJsonObject,reviewsJsonObject,buildingJsonObject,fireJsonObject){
@@ -148,14 +150,14 @@ function displayData(dataElementsJsonObject,milestonesJsonObject,reviewsJsonObje
 		var milestoneSkipped = ["N","N","N","N","N"];
 		if(condensedMilestonesList.Completed.DisplayStatus){
 			currentMilestone = condensedMilestonesList.Completed.DisplayStatus;
-			$('#descriptionLbl').html(condensedMilestonesList.Completed.Description);
+			$('#descriptionLbl').html(autoLinker.link(condensedMilestonesList.Completed.ContactInfo));
 		} else {
 			if(condensedMilestonesList.Inspections.DisplayStatus){
 				if(currentMilestone === ""){
 					currentMilestone = condensedMilestonesList.Inspections.DisplayStatus;
 					$('#descriptionLbl').html(condensedMilestonesList.Inspections.Description);
 					if(typeof condensedMilestonesList.Inspections.ContactInfo !== 'undefined'){
-						$('#contactInfo').html(condensedMilestonesList.Inspections.ContactInfo);
+						$('#contactInfo').html(autoLinker.link(condensedMilestonesList.Inspections.ContactInfo));
 					}
 				}
 				$('#fireInspectionsStatusLbl').html(condensedMilestonesList.Inspections.DisplayStatus+"<br>"
@@ -171,7 +173,7 @@ function displayData(dataElementsJsonObject,milestonesJsonObject,reviewsJsonObje
 					currentMilestone = condensedMilestonesList.Issuance.DisplayStatus;
 					$('#descriptionLbl').html(condensedMilestonesList.Issuance.Description);
 					if(typeof condensedMilestonesList.Issuance.ContactInfo !== 'undefined'){
-						$('#contactInfo').html(condensedMilestonesList.Issuance.ContactInfo);
+						$('#contactInfo').html(cautoLinker.link(condensedMilestonesList.Issuance.ContactInfo));
 					}
 				}
 				$('#fireIssuanceStatusLbl').html(condensedMilestonesList.Issuance.DisplayStatus+"<br>"
@@ -187,7 +189,7 @@ function displayData(dataElementsJsonObject,milestonesJsonObject,reviewsJsonObje
 					currentMilestone = condensedMilestonesList.PermitReview.DisplayStatus;
 					$('#descriptionLbl').html(condensedMilestonesList.PermitReview.Description);
 					if(typeof condensedMilestonesList.PermitReview.ContactInfo !== 'undefined'){
-						$('#contactInfo').html(condensedMilestonesList.PermitReview.ContactInfo);
+						$('#contactInfo').html(autoLinker.link(condensedMilestonesList.PermitReview.ContactInfo));
 					}
 				}
 				$('#firePermitReviewStatusLbl').html(condensedMilestonesList.PermitReview.DisplayStatus+"<br>"
@@ -203,7 +205,7 @@ function displayData(dataElementsJsonObject,milestonesJsonObject,reviewsJsonObje
 					currentMilestone = condensedMilestonesList.IntakePayment.DisplayStatus;
 					$('#descriptionLbl').html(condensedMilestonesList.IntakePayment.Description);
 					if(typeof condensedMilestonesList.IntakePayment.ContactInfo !== 'undefined'){
-						$('#contactInfo').html(condensedMilestonesList.IntakePayment.ContactInfo);
+						$('#contactInfo').html(autoLinker.link(condensedMilestonesList.IntakePayment.ContactInfo));
 					}
 				}
 				$('#fireIntakePaymentStatusLbl').html(condensedMilestonesList.IntakePayment.DisplayStatus+"<br>"
@@ -231,7 +233,7 @@ function displayData(dataElementsJsonObject,milestonesJsonObject,reviewsJsonObje
 		
 		$.each(milestonesList, function(key,value){
 			console.log(value);
-			$.each(fireMilestonesTranslationList, function(key1,value1){
+			$.each(buildingMilestonesTranslationList, function(key1,value1){
 				//console.log(value1);
 				if(value.MilestoneName === value1.Milestones){
 					console.log(value1.DisplayStatus);
@@ -340,16 +342,17 @@ function displayData(dataElementsJsonObject,milestonesJsonObject,reviewsJsonObje
 		// Determine the current Milestone and if a milestone has been skipped.  Also output some data elements.
 		var currentMilestone = "";
 		var milestoneSkipped = ["N","N","N","N","N","N","N"];
+		var autoLinker = new Autolinker();
 		if(condensedMilestonesList.Completed.DisplayStatus){
 			currentMilestone = condensedMilestonesList.Completed.DisplayStatus;
-			$('#descriptionLbl').html(condensedMilestonesList.Completed.Description);
+			$('#descriptionLbl').html(autoLinker.link(condensedMilestonesList.Completed.ContactInfo));
 		} else {
 			if(condensedMilestonesList.Occupancy.DisplayStatus){
 				if(currentMilestone === ""){
 					currentMilestone = condensedMilestonesList.Occupancy.DisplayStatus;
 					$('#descriptionLbl').html(condensedMilestonesList.Occupancy.Description);
 					if(typeof condensedMilestonesList.Occupancy.ContactInfo !== 'undefined'){
-						$('#contactInfo').html(condensedMilestonesList.Occupancy.ContactInfo);
+						$('#contactInfo').html(autoLinker.link(condensedMilestonesList.Occupancy.ContactInfo));
 					}
 				}
 				$('#buildingOccupancyStatusLbl').html(condensedMilestonesList.Occupancy.DisplayStatus+"<br>"
@@ -365,7 +368,7 @@ function displayData(dataElementsJsonObject,milestonesJsonObject,reviewsJsonObje
 					currentMilestone = condensedMilestonesList.Inspections.DisplayStatus;
 					$('#descriptionLbl').html(condensedMilestonesList.Inspections.Description);
 					if(typeof condensedMilestonesList.Inspections.ContactInfo !== 'undefined'){
-						$('#contactInfo').html(condensedMilestonesList.Inspections.ContactInfo);
+						$('#contactInfo').html(autoLinker.link(condensedMilestonesList.Inspections.ContactInfo));
 					}
 				}
 				$('#buildingInspectionsStatusLbl').html(condensedMilestonesList.Inspections.DisplayStatus+"<br>"
@@ -381,7 +384,7 @@ function displayData(dataElementsJsonObject,milestonesJsonObject,reviewsJsonObje
 					currentMilestone = condensedMilestonesList.Issuance.DisplayStatus;
 					$('#descriptionLbl').html(condensedMilestonesList.Issuance.Description);
 					if(typeof condensedMilestonesList.Issuance.ContactInfo !== 'undefined'){
-						$('#contactInfo').html(condensedMilestonesList.Issuance.ContactInfo);
+						$('#contactInfo').html(autoLinker.link(condensedMilestonesList.Issuance.ContactInfo));
 					}
 				}
 				$('#buildingIssuanceStatusLbl').html(condensedMilestonesList.Issuance.DisplayStatus+"<br>"
@@ -397,7 +400,7 @@ function displayData(dataElementsJsonObject,milestonesJsonObject,reviewsJsonObje
 					currentMilestone = condensedMilestonesList.ZoningReview.DisplayStatus;
 					$('#descriptionLbl').html(condensedMilestonesList.ZoningReview.Description);
 					if(typeof condensedMilestonesList.ZoningReview.ContactInfo !== 'undefined'){
-						$('#contactInfo').html(condensedMilestonesList.ZoningReview.ContactInfo);
+						$('#contactInfo').html(autoLinker.link(condensedMilestonesList.ZoningReview.ContactInfo));
 					}
 				}
 				$('#buildingZoningReviewStatusLbl').html(condensedMilestonesList.ZoningReview.DisplayStatus+"<br>"
@@ -413,7 +416,7 @@ function displayData(dataElementsJsonObject,milestonesJsonObject,reviewsJsonObje
 					currentMilestone = condensedMilestonesList.ProjectReview.DisplayStatus;
 					$('#descriptionLbl').html(condensedMilestonesList.ProjectReview.Description);
 					if(typeof condensedMilestonesList.ProjectReview.ContactInfo !== 'undefined'){
-						$('#contactInfo').html(condensedMilestonesList.ProjectReview.ContactInfo);
+						$('#contactInfo').html(autoLinker.link(condensedMilestonesList.ProjectReview.ContactInfo));
 					}
 				}
 				$('#buildingProjectReviewStatusLbl').html(condensedMilestonesList.ProjectReview.DisplayStatus+"<br>"
@@ -429,7 +432,7 @@ function displayData(dataElementsJsonObject,milestonesJsonObject,reviewsJsonObje
 					currentMilestone = condensedMilestonesList.IntakePayment.DisplayStatus;
 					$('#descriptionLbl').html(condensedMilestonesList.IntakePayment.Description);
 					if(typeof condensedMilestonesList.IntakePayment.ContactInfo !== 'undefined'){
-						$('#contactInfo').html(condensedMilestonesList.IntakePayment.ContactInfo);
+						$('#contactInfo').html(autoLinker.link(condensedMilestonesList.IntakePayment.ContactInfo));
 					}
 				}
 				$('#buildingIntakePaymentStatusLbl').html(condensedMilestonesList.IntakePayment.DisplayStatus+"<br>"
@@ -461,6 +464,7 @@ function displayData(dataElementsJsonObject,milestonesJsonObject,reviewsJsonObje
 		// $('#').html();
 		// $('#').html();
 	}
+$('#load').hide();
 }
 
 // since all of the Zip codes near Boston, MA begin with a 0, this function ensures they all retain their leading 0.
@@ -837,5 +841,3 @@ function showProgress(permitType,currentMilestone,permitID,milestoneSkipped){
 		console.log('Invalid Permit Type submitted.');
 	}
 }
-
-

@@ -52,29 +52,57 @@
                 </span>
             </div><!-- /input-group -->
           </div><!-- /.col-lg-6 -->
-        </div></br>
-        <p text-align="left" id="noInputWarning"></p></br>
+        </div>
         <div class="row">
           <div class="col-lg-1">
-            <div id="buildingIntakePaymentStatusLbl" class="alert alert-info" role="alert">Intake & Payment</div>
+            <div id="load"><img src="images/spinner.gif"/></div>
           </div>
+        </div>
+        </br>
+        <p text-align="left" id="noInputWarning"></p>
+        <p text-align="left" id="trackerTitle">Permit Progress Tracker:</p>
+        <div class="row">
+          <div class="col-lg-1"></div>
           <div class="col-lg-2">
-            <div id="buildingProjectReviewStatusLbl" class="alert alert-info" role="alert">Project Review</div>
+            <span class="glyphicon glyphicon-arrow-right" id="chevronHolder"></span>
           </div>
           <div class="col-lg-4">
-            <div id="buildingZoningReviewStatusLbl" class="alert alert-info" role="alert">Zoning Review</div>
+            <span class="glyphicon glyphicon-arrow-right" id="chevronHolder"></span>
           </div>
           <div class="col-lg-1">
-            <div id="buildingIssuanceStatusLbl" class="alert alert-info" role="alert">Issuance</div>
+            <span class="glyphicon glyphicon-arrow-right" id="chevronHolder"></span>
           </div>
           <div class="col-lg-2">
-            <div id="buildingInspectionsStatusLbl" class="alert alert-info" role="alert">Inspections</div>
+            <span class="glyphicon glyphicon-arrow-right" id="chevronHolder"></span>
           </div>
           <div class="col-lg-1">
-            <div id="buildingOccupancyStatusLbl" class="alert alert-info" role="alert">Occupancy</div>
+            <span class="glyphicon glyphicon-arrow-right" id="chevronHolder"></span>
           </div>
           <div class="col-lg-1">
-            <div id="buildingCompletedStatusLbl" class="alert alert-info" role="alert">Completed</div>
+            <span class="glyphicon glyphicon-arrow-right" id="chevronHolder"></span>
+          </div>
+        </div>        
+        <div class="row">
+          <div class="col-lg-1">
+            <div id="buildingIntakePaymentStatusLbl" class="alert alert-info" role="alert">Intake & Payment<br><br></div>
+          </div>
+          <div class="col-lg-2">
+            <div id="buildingProjectReviewStatusLbl" class="alert alert-info" role="alert">Project Review<br><br><br></div>
+          </div>
+          <div class="col-lg-4">
+            <div id="buildingZoningReviewStatusLbl" class="alert alert-info" role="alert">Zoning Review<br><br><br></div>
+          </div>
+          <div class="col-lg-1">
+            <div id="buildingIssuanceStatusLbl" class="alert alert-info" role="alert">Issuance<br><br><br></div>
+          </div>
+          <div class="col-lg-2">
+            <div id="buildingInspectionsStatusLbl" class="alert alert-info" role="alert">Inspections<br><br><br></div>
+          </div>
+          <div class="col-lg-1">
+            <div id="buildingOccupancyStatusLbl" class="alert alert-info" role="alert">Occupancy<br><br><br></div>
+          </div>
+          <div class="col-lg-1">
+            <div id="buildingCompletedStatusLbl" class="alert alert-info" role="alert">Completed<br><br><br></div>
           </div>
         </div>
         <p id="statusOnDateLbl"></p>
@@ -124,6 +152,7 @@
 
         <script src="js/vendor/jquery-1.11.0.min.js"></script>
         <script src="js/vendor/bootstrap.min.js"></script>
+        <script src="js/vendor/dist/Autolinker.min.js"></script>
         <script src="js/details.js"></script>
         <script src="js/main.js"></script>
 

@@ -83,6 +83,10 @@ h2 {
 	text-align: center;
 }
 
+#chevronHolder{
+	margin-left: -8px;
+}
+
 #descriptionLbl {
 	text-align: left;
 	margin-top: 10px;
@@ -113,6 +117,11 @@ h2 {
 .navbar-inverse .navbar-brand:focus {
   color: #999;
   background-color: transparent;
+}
+
+/* Spinner*/
+#load {
+   display: none;
 }
 
 
