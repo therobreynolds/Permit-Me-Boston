@@ -33,25 +33,32 @@ function getData(permitID){
 	// grab the firemilestones data
 	$.getJSON('http://default-environment-iygu5qavq7.elasticbeanstalk.com/firemilestonestranslated.php?number=' + permitID, function(data) {
 	  	var fireJsonObject = data;
+	}),
+	// grab the related permits data
+	//$.getJSON('http://default-environment-iygu5qavq7.elasticbeanstalk.com/relatedPermits.php?number=' + permitID, function(data) {
+	$.getJSON('http://default-environment-iygu5qavq7.elasticbeanstalk.com/buildingmilestonestranslated.php?number=' + permitID, function(data) {
+	  	var relatedPermitsJsonObject = data;
 	})
-	).done(function(dataElementsJsonObject,milestonesJsonObject,reviewsJsonObject,buildingJsonObject,fireJsonObject){
+	).done(function(dataElementsJsonObject,milestonesJsonObject,reviewsJsonObject,buildingJsonObject,fireJsonObject,relatedPermitsJsonObject){
 		// Call the function to display the data with the resulting json objects
-		displayData(dataElementsJsonObject,milestonesJsonObject,reviewsJsonObject,buildingJsonObject,fireJsonObject);
+		displayData(dataElementsJsonObject,milestonesJsonObject,reviewsJsonObject,buildingJsonObject,fireJsonObject,relatedPermitsJsonObject);
 	});
 }
 // Use the argument json objects to fill in the data on the page
-function displayData(dataElementsJsonObject,milestonesJsonObject,reviewsJsonObject,buildingJsonObject,fireJsonObject) {
+function displayData(dataElementsJsonObject,milestonesJsonObject,reviewsJsonObject,buildingJsonObject,fireJsonObject,relatedPermitsJsonObject) {
 	// Put the json objects into containers for use
 	dataElementsList = dataElementsJsonObject.slice(0,1)[0];
-	console.log(dataElementsList);
+	// console.log(dataElementsList);
 	milestonesList = milestonesJsonObject.slice(0,1)[0];
-	console.log(milestonesList);
+	// console.log(milestonesList);
 	reviewsList = reviewsJsonObject.slice(0,1)[0];
-	console.log(reviewsList);
+	// console.log(reviewsList);
 	buildingMilestonesTranslationList = buildingJsonObject.slice(0,1)[0];
-	console.log(buildingMilestonesTranslationList);
+	// console.log(buildingMilestonesTranslationList);
 	fireMilestonesTranslationList = fireJsonObject.slice(0,1)[0];
-	console.log(fireMilestonesTranslationList);
+	// console.log(fireMilestonesTranslationList);
+	relatedPermitsList = relatedPermitsJsonObject.slice(0,1)[0];
+	// console.log(relatedPermitsList);
 
 	// Set variables for filling in the page
 	var permitType = dataElementsList.BuildingOrFire.toString();
@@ -66,11 +73,11 @@ function displayData(dataElementsJsonObject,milestonesJsonObject,reviewsJsonObje
 		condensedMilestonesList.Completed = new Object();
 		
 		$.each(milestonesList, function(key,value){
-			console.log(value);
+			//console.log(value);
 			$.each(fireMilestonesTranslationList, function(key1,value1){
 				//console.log(value1);
 				if(value.MilestoneName === value1.Milestones){
-					console.log(value1.DisplayStatus);
+					//console.log(value1.DisplayStatus);
 					if(value1.DisplayStatus === "Intake & Payment"){
 						if(condensedMilestonesList.IntakePayment.MilesoneStartDate){
 							if(value.MilesoneStartDate<condensedMilestonesList.IntakePayment.MilesoneStartDate){
@@ -141,85 +148,119 @@ function displayData(dataElementsJsonObject,milestonesJsonObject,reviewsJsonObje
 							condensedMilestonesList.Completed.POC = value.CityContactName.toString();
 						}
 					}
-				}
+				}		
 			});
 			console.log(condensedMilestonesList);
 		});
 		// Determine the current Milestone and if a milestone has been skipped.  Also output some data elements.
 		var currentMilestone = "";
 		var milestoneSkipped = ["N","N","N","N","N"];
+		var autoLinker = new Autolinker();
+		var statusLbl = "";
 		if(condensedMilestonesList.Completed.DisplayStatus){
 			currentMilestone = condensedMilestonesList.Completed.DisplayStatus;
-			$('#descriptionLbl').html(autoLinker.link(condensedMilestonesList.Completed.ContactInfo));
+			$('#descriptionLbl').html(condensedMilestonesList.Completed.Description);
+			$('#contactPOC').html(condensedMilestonesList.Completed.POC);
+			$('#fireCompletedStatusLbl').html("<b>Completed</b><br><u>Completed On:</u> "
+				+(condensedMilestonesList.Completed.MilestoneStartDate.getMonth()+1)+"/"+condensedMilestonesList.Completed.MilestoneStartDate.getDate()+"/"+condensedMilestonesList.Completed.MilestoneStartDate.getFullYear()
+				+"<br><br><br><br><br><br>");
 		} else {
+			$('#fireCompletedStatusLbl').html("<b>Completed</b><br><br><br><br><br><br><br><br>");
 			if(condensedMilestonesList.Inspections.DisplayStatus){
 				if(currentMilestone === ""){
 					currentMilestone = condensedMilestonesList.Inspections.DisplayStatus;
 					$('#descriptionLbl').html(condensedMilestonesList.Inspections.Description);
+					$('#contactPOC').html(condensedMilestonesList.Inspections.POC);
 					if(typeof condensedMilestonesList.Inspections.ContactInfo !== 'undefined'){
 						$('#contactInfo').html(autoLinker.link(condensedMilestonesList.Inspections.ContactInfo));
 					}
 				}
-				$('#fireInspectionsStatusLbl').html(condensedMilestonesList.Inspections.DisplayStatus+"<br>"
-					+"Started On: "+(condensedMilestonesList.Inspections.MilestoneStartDate.getMonth()+1)+"/"+condensedMilestonesList.Inspections.MilestoneStartDate.getDate()+"/"+condensedMilestonesList.Inspections.MilestoneStartDate.getFullYear());
+				$('#fireInspectionsStatusLbl').html("<b>"+condensedMilestonesList.Inspections.DisplayStatus+"</b><br>"
+					+"<u>Target Duration:</u> "+getDuration("Inspections",fireMilestonesTranslationList)+"<br>"
+					+"<u>Started On:</u> "+(condensedMilestonesList.Inspections.MilestoneStartDate.getMonth()+1)+"/"+condensedMilestonesList.Inspections.MilestoneStartDate.getDate()+"/"+condensedMilestonesList.Inspections.MilestoneStartDate.getFullYear()
+					+"<br><br><br><br><br><br>");
 			} else {
+				statusLbl = "<b>Inspections</b><br>";
 				if(condensedMilestonesList.Completed.DisplayStatus){
 					milestoneSkipped[3] = "Y";
-					$('#fireInspectionsStatusLbl').html("Inspections<br>N/A");
+					statusLbl += "<u>Target Duration:</u> N/A<br><u>Started On:</u> N/A";
+				} else {
+					statusLbl += "<u>Target Duration:</u> "+getDuration("Inspections",fireMilestonesTranslationList)+"<br><u>Started On:</u> Not Yet Started";
 				}
+				$('#fireInspectionsStatusLbl').html(statusLbl+"<br><br><br><br><br><br>");
 			}
 			if(condensedMilestonesList.Issuance.DisplayStatus){
 				if(currentMilestone === ""){
 					currentMilestone = condensedMilestonesList.Issuance.DisplayStatus;
 					$('#descriptionLbl').html(condensedMilestonesList.Issuance.Description);
+					$('#contactPOC').html(condensedMilestonesList.Issuance.POC);
 					if(typeof condensedMilestonesList.Issuance.ContactInfo !== 'undefined'){
-						$('#contactInfo').html(cautoLinker.link(condensedMilestonesList.Issuance.ContactInfo));
+						$('#contactInfo').html(autoLinker.link(condensedMilestonesList.Issuance.ContactInfo));
 					}
 				}
-				$('#fireIssuanceStatusLbl').html(condensedMilestonesList.Issuance.DisplayStatus+"<br>"
-					+"Started On: "+(condensedMilestonesList.Issuance.MilestoneStartDate.getMonth()+1)+"/"+condensedMilestonesList.Issuance.MilestoneStartDate.getDate()+"/"+condensedMilestonesList.Issuance.MilestoneStartDate.getFullYear());
+				$('#fireIssuanceStatusLbl').html("<b>"+condensedMilestonesList.Issuance.DisplayStatus+"</b><br>"
+					+"<u>Target Duration:</u> "+getDuration("Issuance",fireMilestonesTranslationList)+"<br>"
+					+"<u>Started On:</u> "+(condensedMilestonesList.Issuance.MilestoneStartDate.getMonth()+1)+"/"+condensedMilestonesList.Issuance.MilestoneStartDate.getDate()+"/"+condensedMilestonesList.Issuance.MilestoneStartDate.getFullYear()
+					+"<br><br><br><br><br><br>");
 			} else {
+				statusLbl = "<b>Issuance</b><br>";
 				if(condensedMilestonesList.Completed.DisplayStatus || condensedMilestonesList.Inspections.DisplayStatus){
 					milestoneSkipped[2] = "Y";
-					$('#fireIssuanceStatusLbl').html("Issuance<br>N/A");
+					statusLbl += "<u>Target Duration:</u> N/A<br><u>Started On:</u> N/A";
+				} else {
+					statusLbl += "<u>Target Duration:</u> "+getDuration("Issuance",fireMilestonesTranslationList)+"<br><u>Started On:</u> Not Yet Started";
 				}
+				$('#fireIssuanceStatusLbl').html(statusLbl+"<br><br><br><br><br><br>");
 			}
 			if(condensedMilestonesList.PermitReview.DisplayStatus){
 				if(currentMilestone === ""){
 					currentMilestone = condensedMilestonesList.PermitReview.DisplayStatus;
 					$('#descriptionLbl').html(condensedMilestonesList.PermitReview.Description);
+					$('#contactPOC').html(condensedMilestonesList.PermitReview.POC);
 					if(typeof condensedMilestonesList.PermitReview.ContactInfo !== 'undefined'){
 						$('#contactInfo').html(autoLinker.link(condensedMilestonesList.PermitReview.ContactInfo));
 					}
 				}
-				$('#firePermitReviewStatusLbl').html(condensedMilestonesList.PermitReview.DisplayStatus+"<br>"
-					+"Started On: "+(condensedMilestonesList.PermitReview.MilestoneStartDate.getMonth()+1)+"/"+condensedMilestonesList.PermitReview.MilestoneStartDate.getDate()+"/"+condensedMilestonesList.PermitReview.MilestoneStartDate.getFullYear());
+				$('#firePermitReviewStatusLbl').html("<b>"+condensedMilestonesList.PermitReview.DisplayStatus+"</b><br>"
+					+"<u>Target Duration:</u> "+getDuration("Permit Review",fireMilestonesTranslationList)+"<br>"
+					+"<u>Started On:</u> "+(condensedMilestonesList.PermitReview.MilestoneStartDate.getMonth()+1)+"/"+condensedMilestonesList.PermitReview.MilestoneStartDate.getDate()+"/"+condensedMilestonesList.PermitReview.MilestoneStartDate.getFullYear()
+					+"<br><br><br><br><br><br>");
 			} else {
+				statusLbl = "<b>Permit Review</b><br>";
 				if(condensedMilestonesList.Completed.DisplayStatus || condensedMilestonesList.Inspections.DisplayStatus || condensedMilestonesList.Issuance.DisplayStatus){
 					milestoneSkipped[1] = "Y";
-					$('#firePermitReviewStatusLbl').html("Permit Review<br>N/A");
+					statusLbl += "<u>Target Duration:</u> N/A<br><u>Started On:</u> N/A";
+				} else {
+					statusLbl += "<u>Target Duration:</u> "+getDuration("Permit Review",fireMilestonesTranslationList)+"<br><u>Started On:</u> Not Yet Started";
 				}
+				$('#firePermitReviewStatusLbl').html(statusLbl+"<br><br><br><br><br><br>");
 			}
 			if(condensedMilestonesList.IntakePayment.DisplayStatus){
 				if(currentMilestone === ""){
 					currentMilestone = condensedMilestonesList.IntakePayment.DisplayStatus;
 					$('#descriptionLbl').html(condensedMilestonesList.IntakePayment.Description);
+					$('#contactPOC').html(condensedMilestonesList.IntakePayment.POC);
 					if(typeof condensedMilestonesList.IntakePayment.ContactInfo !== 'undefined'){
 						$('#contactInfo').html(autoLinker.link(condensedMilestonesList.IntakePayment.ContactInfo));
 					}
 				}
-				$('#fireIntakePaymentStatusLbl').html(condensedMilestonesList.IntakePayment.DisplayStatus+"<br>"
-					+"Started On: "+(condensedMilestonesList.IntakePayment.MilestoneStartDate.getMonth()+1)+"/"+condensedMilestonesList.IntakePayment.MilestoneStartDate.getDate()+"/"+condensedMilestonesList.IntakePayment.MilestoneStartDate.getFullYear());
+				$('#fireIntakePaymentStatusLbl').html("<b>"+condensedMilestonesList.IntakePayment.DisplayStatus+"</b><br>"
+					+"<u>Target Duration:</u> "+getDuration("Intake & Payment",fireMilestonesTranslationList)+"<br>"
+					+"<u>Started On</u>: "+(condensedMilestonesList.IntakePayment.MilestoneStartDate.getMonth()+1)+"/"+condensedMilestonesList.IntakePayment.MilestoneStartDate.getDate()+"/"+condensedMilestonesList.IntakePayment.MilestoneStartDate.getFullYear());
 			} else {
+				statusLbl = "<b>Intake & Payment</b><br>";
 				if(condensedMilestonesList.Completed.DisplayStatus || condensedMilestonesList.Inspections.DisplayStatus|| condensedMilestonesList.Issuance.DisplayStatus || condensedMilestonesList.PermitReview.DisplayStatus){
 					milestoneSkipped[0] = "Y";
-					$('#fireIntakePaymentStatusLbl').html("Intake & Payment<br>N/A");
+					statusLbl += "<u>Target Duration:</u> N/A<br><u>Started On:</u> N/A";
+				} else {
+					statusLbl += "<u>Target Duration:</u> "+getDuration("Intake & Payment",fireMilestonesTranslationList)+"<br><u>Started On:</u> Not Yet Started";
 				}
+				$('#fireIntakePaymentStatusLbl').html(statusLbl+"<br><br><br>");
 			}
 		}
-		console.log('currentMilestone');
-		console.log(currentMilestone);
-		console.log(milestoneSkipped);
+		// console.log('currentMilestone');
+		// console.log(currentMilestone);
+		// console.log(milestoneSkipped);
 	} 
 	// For Building Permits
 	if(permitType === "Building"){
@@ -232,11 +273,11 @@ function displayData(dataElementsJsonObject,milestonesJsonObject,reviewsJsonObje
 		condensedMilestonesList.Completed = new Object();
 		
 		$.each(milestonesList, function(key,value){
-			console.log(value);
+			// console.log(value);
 			$.each(buildingMilestonesTranslationList, function(key1,value1){
 				//console.log(value1);
 				if(value.MilestoneName === value1.Milestones){
-					console.log(value1.DisplayStatus);
+					// console.log(value1.DisplayStatus);
 					if(value1.DisplayStatus === "Intake & Payment"){
 						if(condensedMilestonesList.IntakePayment.MilesoneStartDate){
 							if(value.MilesoneStartDate<condensedMilestonesList.IntakePayment.MilesoneStartDate){
@@ -343,110 +384,157 @@ function displayData(dataElementsJsonObject,milestonesJsonObject,reviewsJsonObje
 		var currentMilestone = "";
 		var milestoneSkipped = ["N","N","N","N","N","N","N"];
 		var autoLinker = new Autolinker();
+		var statusLbl = "";
 		if(condensedMilestonesList.Completed.DisplayStatus){
 			currentMilestone = condensedMilestonesList.Completed.DisplayStatus;
-			$('#descriptionLbl').html(autoLinker.link(condensedMilestonesList.Completed.ContactInfo));
+			$('#descriptionLbl').html(condensedMilestonesList.Completed.Description);
+			$('#contactPOC').html(condensedMilestonesList.Completed.POC);
+			$('#buildingCompletedStatusLbl').html("<b>Completed</b><br><u>Completed On:</u> "
+				+(condensedMilestonesList.Completed.MilestoneStartDate.getMonth()+1)+"/"+condensedMilestonesList.Completed.MilestoneStartDate.getDate()+"/"+condensedMilestonesList.Completed.MilestoneStartDate.getFullYear()
+				+"<br><br><br><br><br>");
 		} else {
+			$('#buildingCompletedStatusLbl').html("<b>Completed</b><br><br><br><br><br><br><br>");
 			if(condensedMilestonesList.Occupancy.DisplayStatus){
 				if(currentMilestone === ""){
 					currentMilestone = condensedMilestonesList.Occupancy.DisplayStatus;
 					$('#descriptionLbl').html(condensedMilestonesList.Occupancy.Description);
+					$('#contactPOC').html(condensedMilestonesList.Occupancy.POC);
 					if(typeof condensedMilestonesList.Occupancy.ContactInfo !== 'undefined'){
 						$('#contactInfo').html(autoLinker.link(condensedMilestonesList.Occupancy.ContactInfo));
 					}
 				}
-				$('#buildingOccupancyStatusLbl').html(condensedMilestonesList.Occupancy.DisplayStatus+"<br>"
-					+"Started On: "+(condensedMilestonesList.Occupancy.MilestoneStartDate.getMonth()+1)+"/"+condensedMilestonesList.Occupancy.MilestoneStartDate.getDate()+"/"+condensedMilestonesList.Occupancy.MilestoneStartDate.getFullYear());
+				$('#buildingOccupancyStatusLbl').html("<b>"+condensedMilestonesList.Occupancy.DisplayStatus+"</b><br>"
+					+"<u>Target Duration:</u> "+getDuration("Occupancy",buildingMilestonesTranslationList)+"<br>"
+					+"<u>Started On:</u> "+(condensedMilestonesList.Occupancy.MilestoneStartDate.getMonth()+1)+"/"+condensedMilestonesList.Occupancy.MilestoneStartDate.getDate()+"/"+condensedMilestonesList.Occupancy.MilestoneStartDate.getFullYear()
+					+"<br>");
 			} else {
+				statusLbl = "<b>Occupancy</b><br>";
 				if(condensedMilestonesList.Completed.DisplayStatus){
 					milestoneSkipped[5] = "Y";
-					$('#buildingOccupancyStatusLbl').html("Occupancy<br>N/A");
+					statusLbl += "<u>Target Duration:</u> N/A<br><u>Started On:</u> N/A";
+				} else {
+					statusLbl += "<u>Target Duration:</u> "+getDuration("Occupancy",buildingMilestonesTranslationList)+"<br><u>Started On:</u> Not Yet Started";
 				}
+				$('#buildingOccupancyStatusLbl').html(statusLbl+"<br><br>");
 			}
 			if(condensedMilestonesList.Inspections.DisplayStatus){
 				if(currentMilestone === ""){
 					currentMilestone = condensedMilestonesList.Inspections.DisplayStatus;
 					$('#descriptionLbl').html(condensedMilestonesList.Inspections.Description);
+					$('#contactPOC').html(condensedMilestonesList.Inspections.POC);
 					if(typeof condensedMilestonesList.Inspections.ContactInfo !== 'undefined'){
 						$('#contactInfo').html(autoLinker.link(condensedMilestonesList.Inspections.ContactInfo));
 					}
 				}
-				$('#buildingInspectionsStatusLbl').html(condensedMilestonesList.Inspections.DisplayStatus+"<br>"
-					+"Started On: "+(condensedMilestonesList.Inspections.MilestoneStartDate.getMonth()+1)+"/"+condensedMilestonesList.Inspections.MilestoneStartDate.getDate()+"/"+condensedMilestonesList.Inspections.MilestoneStartDate.getFullYear());
+				$('#buildingInspectionsStatusLbl').html("<b>"+condensedMilestonesList.Inspections.DisplayStatus+"</b><br>"
+					+"<u>Target Duration:</u> "+getDuration("Inspections",buildingMilestonesTranslationList)+"<br>"
+					+"<u>Started On:</u> "+(condensedMilestonesList.Inspections.MilestoneStartDate.getMonth()+1)+"/"+condensedMilestonesList.Inspections.MilestoneStartDate.getDate()+"/"+condensedMilestonesList.Inspections.MilestoneStartDate.getFullYear()
+					+"<br><br><br><br><br>");
 			} else {
+				statusLbl = "<b>Inspections</b><br>";
 				if(condensedMilestonesList.Completed.DisplayStatus||condensedMilestonesList.Occupancy.DisplayStatus){
 					milestoneSkipped[4] = "Y";
-					$('#buildingInspectionsStatusLbl').html("Inspections<br>N/A");
+					statusLbl += "<u>Target Duration:</u> N/A<br><u>Started On:</u> N/A";
+				} else {
+					statusLbl += "<u>Target Duration:</u> "+getDuration("Inspections",buildingMilestonesTranslationList)+"<br><u>Started On:</u> Not Yet Started";
 				}
+				$('#buildingInspectionsStatusLbl').html(statusLbl+"<br><br><br><br><br>");
 			}
 			if(condensedMilestonesList.Issuance.DisplayStatus){
 				if(currentMilestone === ""){
 					currentMilestone = condensedMilestonesList.Issuance.DisplayStatus;
 					$('#descriptionLbl').html(condensedMilestonesList.Issuance.Description);
+					$('#contactPOC').html(condensedMilestonesList.Issuance.POC);
 					if(typeof condensedMilestonesList.Issuance.ContactInfo !== 'undefined'){
 						$('#contactInfo').html(autoLinker.link(condensedMilestonesList.Issuance.ContactInfo));
 					}
 				}
-				$('#buildingIssuanceStatusLbl').html(condensedMilestonesList.Issuance.DisplayStatus+"<br>"
-					+"Started On: "+(condensedMilestonesList.Issuance.MilestoneStartDate.getMonth()+1)+"/"+condensedMilestonesList.Issuance.MilestoneStartDate.getDate()+"/"+condensedMilestonesList.Issuance.MilestoneStartDate.getFullYear());
+				$('#buildingIssuanceStatusLbl').html("<b>"+condensedMilestonesList.Issuance.DisplayStatus+"</b><br>"
+					+"<u>Target Duration:</u> "+getDuration("Issuance",buildingMilestonesTranslationList)+"<br>"
+					+"<u>Started On:</u> "+(condensedMilestonesList.Issuance.MilestoneStartDate.getMonth()+1)+"/"+condensedMilestonesList.Issuance.MilestoneStartDate.getDate()+"/"+condensedMilestonesList.Issuance.MilestoneStartDate.getFullYear()
+					+"<br><br><br>");
 			} else {
+				statusLbl = "<b>Issuance</b><br>";
 				if(condensedMilestonesList.Completed.DisplayStatus||condensedMilestonesList.Occupancy.DisplayStatus || condensedMilestonesList.Inspections.DisplayStatus){
 					milestoneSkipped[3] = "Y";
-					$('#buildingIssuanceStatusLbl').html("Issuance<br>N/A");
+					statusLbl += "<u>Target Duration:</u> N/A<br><u>Started On:</u> N/A";
+				} else {
+					statusLbl += "<u>Target Duration:</u> "+getDuration("Issuance",buildingMilestonesTranslationList)+"<br><u>Started On:</u> Not Yet Started";
 				}
+				$('#buildingIssuanceStatusLbl').html(statusLbl+"<br><br><br>");
 			}
 			if(condensedMilestonesList.ZoningReview.DisplayStatus){
 				if(currentMilestone === ""){
 					currentMilestone = condensedMilestonesList.ZoningReview.DisplayStatus;
 					$('#descriptionLbl').html(condensedMilestonesList.ZoningReview.Description);
+					$('#contactPOC').html(condensedMilestonesList.ZoningReview.POC);
 					if(typeof condensedMilestonesList.ZoningReview.ContactInfo !== 'undefined'){
 						$('#contactInfo').html(autoLinker.link(condensedMilestonesList.ZoningReview.ContactInfo));
 					}
 				}
-				$('#buildingZoningReviewStatusLbl').html(condensedMilestonesList.ZoningReview.DisplayStatus+"<br>"
-					+"Started On: "+(condensedMilestonesList.ZoningReview.MilestoneStartDate.getMonth()+1)+"/"+condensedMilestonesList.ZoningReview.MilestoneStartDate.getDate()+"/"+condensedMilestonesList.ZoningReview.MilestoneStartDate.getFullYear());
+				$('#buildingZoningReviewStatusLbl').html("<b>"+condensedMilestonesList.ZoningReview.DisplayStatus+"</b><br>"
+					+"<u>Target Duration:</u> "+getDuration("Zoning Review",buildingMilestonesTranslationList)+"<br>"
+					+"<u>Started On:</u> "+(condensedMilestonesList.ZoningReview.MilestoneStartDate.getMonth()+1)+"/"+condensedMilestonesList.ZoningReview.MilestoneStartDate.getDate()+"/"+condensedMilestonesList.ZoningReview.MilestoneStartDate.getFullYear()
+					+"<br><br><br><br><br>");
 			} else {
+				statusLbl = "<b>Zoning Review</b><br>";
 				if(condensedMilestonesList.Completed.DisplayStatus||condensedMilestonesList.Occupancy.DisplayStatus || condensedMilestonesList.Inspections.DisplayStatus || condensedMilestonesList.Issuance.DisplayStatus){
 					milestoneSkipped[2] = "Y";
-					$('#buildingZoningReviewStatusLbl').html("Zoning Review<br>N/A");
+					statusLbl += "<u>Target Duration:</u> N/A<br><u>Started On:</u> N/A";
+				} else {
+					statusLbl += "<u>Target Duration:</u> "+getDuration("Zoning Review",buildingMilestonesTranslationList)+"<br><u>Started On:</u> Not Yet Started";
 				}
+				$('#buildingZoningReviewStatusLbl').html(statusLbl+"<br><br><br><br><br>");
 			}
 			if(condensedMilestonesList.ProjectReview.DisplayStatus){
 				if(currentMilestone === ""){
 					currentMilestone = condensedMilestonesList.ProjectReview.DisplayStatus;
 					$('#descriptionLbl').html(condensedMilestonesList.ProjectReview.Description);
+					$('#contactPOC').html(condensedMilestonesList.ProjectReview.POC);
 					if(typeof condensedMilestonesList.ProjectReview.ContactInfo !== 'undefined'){
 						$('#contactInfo').html(autoLinker.link(condensedMilestonesList.ProjectReview.ContactInfo));
 					}
 				}
-				$('#buildingProjectReviewStatusLbl').html(condensedMilestonesList.ProjectReview.DisplayStatus+"<br>"
-					+"Started On: "+(condensedMilestonesList.ProjectReview.MilestoneStartDate.getMonth()+1)+"/"+condensedMilestonesList.ProjectReview.MilestoneStartDate.getDate()+"/"+condensedMilestonesList.ProjectReview.MilestoneStartDate.getFullYear());
+				$('#buildingProjectReviewStatusLbl').html("<b>"+condensedMilestonesList.ProjectReview.DisplayStatus+"</b><br>"
+					+"<u>Target Duration:</u> "+getDuration("Project Review",buildingMilestonesTranslationList)+"<br>"
+					+"<u>Started On:</u> "+(condensedMilestonesList.ProjectReview.MilestoneStartDate.getMonth()+1)+"/"+condensedMilestonesList.ProjectReview.MilestoneStartDate.getDate()+"/"+condensedMilestonesList.ProjectReview.MilestoneStartDate.getFullYear()
+					+"<br><br>");
 			} else {
+				statusLbl = "<b>Project Review</b><br>";
 				if(condensedMilestonesList.Completed.DisplayStatus||condensedMilestonesList.Occupancy.DisplayStatus || condensedMilestonesList.Inspections.DisplayStatus|| condensedMilestonesList.Issuance.DisplayStatus || condensedMilestonesList.ZoningReview.DisplayStatus){
 					milestoneSkipped[1] = "Y";
-					$('#buildingProjectReviewStatusLbl').html("Project Review<br>N/A");
+					statusLbl += "<u>Target Duration:</u> N/A<br><u>Started On:</u> N/A";
+				} else {
+					statusLbl += "<u>Target Duration:</u> "+getDuration("Project Review",buildingMilestonesTranslationList)+"<br><u>Started On:</u> Not Yet Started";
 				}
+				$('#buildingProjectReviewStatusLbl').html(statusLbl+"<br><br><br><br><br><br>");
 			}
 			if(condensedMilestonesList.IntakePayment.DisplayStatus){
 				if(currentMilestone === ""){
 					currentMilestone = condensedMilestonesList.IntakePayment.DisplayStatus;
 					$('#descriptionLbl').html(condensedMilestonesList.IntakePayment.Description);
+					$('#contactPOC').html(condensedMilestonesList.IntakePayment.POC);
 					if(typeof condensedMilestonesList.IntakePayment.ContactInfo !== 'undefined'){
 						$('#contactInfo').html(autoLinker.link(condensedMilestonesList.IntakePayment.ContactInfo));
 					}
 				}
-				$('#buildingIntakePaymentStatusLbl').html(condensedMilestonesList.IntakePayment.DisplayStatus+"<br>"
-					+"Started On: "+(condensedMilestonesList.IntakePayment.MilestoneStartDate.getMonth()+1)+"/"+condensedMilestonesList.IntakePayment.MilestoneStartDate.getDate()+"/"+condensedMilestonesList.IntakePayment.MilestoneStartDate.getFullYear());
+				$('#buildingIntakePaymentStatusLbl').html("<b>"+condensedMilestonesList.IntakePayment.DisplayStatus+"</b><br>"
+					+"<u>Target Duration:</u> "+getDuration("Intake & Payment",buildingMilestonesTranslationList)+"<br>"
+					+"<u>Started On:</u> "+(condensedMilestonesList.IntakePayment.MilestoneStartDate.getMonth()+1)+"/"+condensedMilestonesList.IntakePayment.MilestoneStartDate.getDate()+"/"+condensedMilestonesList.IntakePayment.MilestoneStartDate.getFullYear());
 			} else {
+				statusLbl = "<b>Intake & Payment</b><br><br>";
 				if(condensedMilestonesList.Completed.DisplayStatus||condensedMilestonesList.Occupancy.DisplayStatus || condensedMilestonesList.Inspections.DisplayStatus|| condensedMilestonesList.Issuance.DisplayStatus || condensedMilestonesList.ZoningReview.DisplayStatus || condensedMilestonesList.ProjectReview.DisplayStatus){
 					milestoneSkipped[0] = "Y";
-					$('#buildingIntakePaymentStatusLbl').html("Intake & Payment<br>N/A");
+					statusLbl += "<u>Target Duration:</u> N/A<br><u>Started On:</u> N/A";
+				} else {
+					statusLbl += "<u>Target Duration:</u> "+getDuration("Intake & Payment",buildingMilestonesTranslationList)+"<br><u>Started On:</u> Not Yet Started";
 				}
+				$('#buildingIntakePaymentStatusLbl').html(statusLbl+"<br>");
 			}
 		}
-		console.log('currentMilestone');
-		console.log(currentMilestone);
-		console.log(milestoneSkipped);
+		// console.log('currentMilestone');
+		// console.log(currentMilestone);
+		// console.log(milestoneSkipped);
 	}
 	if(currentMilestone===""||currentMilestone===" "){ //if there are no milestones, then display a no progress message
 		$('#statusOnDateLbl').html("No progress data is available for Permit #"+permitID+".");
@@ -458,7 +546,7 @@ function displayData(dataElementsJsonObject,milestonesJsonObject,reviewsJsonObje
 
 		// Start filling in the other data elements on the page
 		$('#permitInfoText').html("<u>Type of Permit:</u><br>"+dataElementsList.PermitType.toString());
-		$('#contactPOC').html(dataElementsList.PermitPOCName.toString());
+		//$('#contactPOC').html(dataElementsList.PermitPOCName.toString());
 		$('#addressInfo').html(dataElementsList.Address.toString().substring(1,dataElementsList.Address.toString().length)+"<br>"+dataElementsList.City.toString()+", "+dataElementsList.State.toString()+" "+padZipcodeToFive(dataElementsList.Zip.toString()));
 		// $('#').html();
 		// $('#').html();
@@ -473,6 +561,19 @@ function padZipcodeToFive(zipcode) {
  			zipcode = ("0000"+zipcode).slice(-5); 
  		}
   		return zipcode;
+}
+
+function getDuration(displayStatus,milestonesTranslationList){
+	var duration = "";
+	$.each(milestonesTranslationList, function(key,value){
+		if(value.DisplayStatus.toString() === displayStatus){
+			duration = value.ExpectedDuration;
+		}
+	});
+	if(duration === ""){
+		duration = "N/A";
+	}
+	return duration;
 }
 
 // Gets the Reviews data, formats it and outputs it to the #reviewsText tag on the details page
@@ -525,207 +626,254 @@ function showProgress(permitType,currentMilestone,permitID,milestoneSkipped){
 			// Make the current box turn yellow
 			$('#buildingIntakePaymentStatusLbl').removeClass("alert alert-info");
 			$('#buildingIntakePaymentStatusLbl').addClass("alert alert-warning");
+			$('#buildingIntakePaymentStatusLbl').attr("title","This is the current milestone for this permit.");
 
 			// Make the subsequent boxes turn red
 			$('#buildingProjectReviewStatusLbl').removeClass("alert alert-info");
 			$('#buildingProjectReviewStatusLbl').addClass("alert alert-danger");
+			$('#buildingProjectReviewStatusLbl').attr("title","This permit has not yet reached this milestone.");
 
 			$('#buildingZoningReviewStatusLbl').removeClass("alert alert-info");
 			$('#buildingZoningReviewStatusLbl').addClass("alert alert-danger");
+			$('#buildingZoningReviewStatusLbl').attr("title","This permit has not yet reached this milestone.");
 
 			$('#buildingIssuanceStatusLbl').removeClass("alert alert-info");
 			$('#buildingIssuanceStatusLbl').addClass("alert alert-danger");
+			$('#buildingIssuanceStatusLbl').attr("title","This permit has not yet reached this milestone.");
 
 			$('#buildingInspectionsStatusLbl').removeClass("alert alert-info");
 			$('#buildingInspectionsStatusLbl').addClass("alert alert-danger");
+			$('#buildingInspectionsStatusLbl').attr("title","This permit has not yet reached this milestone.");
 
 			$('#buildingOccupancyStatusLbl').removeClass("alert alert-info");
 			$('#buildingOccupancyStatusLbl').addClass("alert alert-danger");
+			$('#buildingOccupancyStatusLbl').attr("title","This permit has not yet reached this milestone.");
 
 			$('#buildingCompletedStatusLbl').removeClass("alert alert-info");
 			$('#buildingCompletedStatusLbl').addClass("alert alert-danger");
+			$('#buildingCompletedStatusLbl').attr("title","This permit has not yet reached this milestone.");
 		}
 		if(currentMilestone==="Project Review"){
 			// Make the previous boxes turn green
 			if(milestoneSkipped[0]!="Y"){
 				$('#buildingIntakePaymentStatusLbl').removeClass("alert alert-info");
 				$('#buildingIntakePaymentStatusLbl').addClass("alert alert-success");
+				$('#buildingIntakePaymentStatusLbl').attr("title","This permit has already surpassed this milestone.");
 			}
 
 			// Make the current box turn yellow
 			$('#buildingProjectReviewStatusLbl').removeClass("alert alert-info");
 			$('#buildingProjectReviewStatusLbl').addClass("alert alert-warning");
+			$('#buildingProjectReviewStatusLbl').attr("title","This is the current milestone for this permit.");
 
 			// Make the subsequent boxes turn red
 			$('#buildingZoningReviewStatusLbl').removeClass("alert alert-info");
 			$('#buildingZoningReviewStatusLbl').addClass("alert alert-danger");
+			$('#buildingZoningReviewStatusLbl').attr("title","This permit has not yet reached this milestone.");
 
 			$('#buildingIssuanceStatusLbl').removeClass("alert alert-info");
 			$('#buildingIssuanceStatusLbl').addClass("alert alert-danger");
+			$('#buildingIssuanceStatusLbl').attr("title","This permit has not yet reached this milestone.");
 
 			$('#buildingInspectionsStatusLbl').removeClass("alert alert-info");
 			$('#buildingInspectionsStatusLbl').addClass("alert alert-danger");
+			$('#buildingInspectionsStatusLbl').attr("title","This permit has not yet reached this milestone.");
 
 			$('#buildingOccupancyStatusLbl').removeClass("alert alert-info");
 			$('#buildingOccupancyStatusLbl').addClass("alert alert-danger");
+			$('#buildingOccupancyStatusLbl').attr("title","This permit has not yet reached this milestone.");
 
 			$('#buildingCompletedStatusLbl').removeClass("alert alert-info");
 			$('#buildingCompletedStatusLbl').addClass("alert alert-danger");
+			$('#buildingCompletedStatusLbl').attr("title","This permit has not yet reached this milestone.");
 		}
 		if(currentMilestone==="Zoning Review"){
 			// Make the previous boxes turn green
 			if(milestoneSkipped[0]!="Y"){
 				$('#buildingIntakePaymentStatusLbl').removeClass("alert alert-info");
 				$('#buildingIntakePaymentStatusLbl').addClass("alert alert-success");
+				$('#buildingIntakePaymentStatusLbl').attr("title","This permit has already surpassed this milestone.");
 			}
 
 			if(milestoneSkipped[1]!="Y"){
 				$('#buildingProjectReviewStatusLbl').removeClass("alert alert-info");
 				$('#buildingProjectReviewStatusLbl').addClass("alert alert-success");
+				$('#buildingProjectReviewStatusLbl').attr("title","This permit has already surpassed this milestone.");
 			}
 
 			// Make the current box turn yellow
 			$('#buildingZoningReviewStatusLbl').removeClass("alert alert-info");
 			$('#buildingZoningReviewStatusLbl').addClass("alert alert-warning");
+			$('#buildingZoningReviewStatusLbl').attr("title","This is the current milestone for this permit.");
 
 			// Make the subsequent boxes turn red
 			$('#buildingIssuanceStatusLbl').removeClass("alert alert-info");
 			$('#buildingIssuanceStatusLbl').addClass("alert alert-danger");
+			$('#buildingIssuanceStatusLbl').attr("title","This permit has not yet reached this milestone.");
 
 			$('#buildingInspectionsStatusLbl').removeClass("alert alert-info");
 			$('#buildingInspectionsStatusLbl').addClass("alert alert-danger");
+			$('#buildingInspectionsStatusLbl').attr("title","This permit has not yet reached this milestone.");
 
 			$('#buildingOccupancyStatusLbl').removeClass("alert alert-info");
 			$('#buildingOccupancyStatusLbl').addClass("alert alert-danger");
+			$('#buildingOccupancyStatusLbl').attr("title","This permit has not yet reached this milestone.");
 
 			$('#buildingCompletedStatusLbl').removeClass("alert alert-info");
 			$('#buildingCompletedStatusLbl').addClass("alert alert-danger");
+			$('#buildingCompletedStatusLbl').attr("title","This permit has not yet reached this milestone.");
 		}
 		if(currentMilestone === "Issuance"){
 			// Make the previous boxes turn green
 			if(milestoneSkipped[0]!="Y"){
 				$('#buildingIntakePaymentStatusLbl').removeClass("alert alert-info");
 				$('#buildingIntakePaymentStatusLbl').addClass("alert alert-success");
+				$('#buildingIntakePaymentStatusLbl').attr("title","This permit has already surpassed this milestone.");
 			}
 
 			if(milestoneSkipped[1]!="Y"){
 				$('#buildingProjectReviewStatusLbl').removeClass("alert alert-info");
 				$('#buildingProjectReviewStatusLbl').addClass("alert alert-success");
+				$('#buildingProjectReviewStatusLbl').attr("title","This permit has already surpassed this milestone.");
 			}
 
 			if(milestoneSkipped[2]!="Y"){
 				$('#buildingZoningReviewStatusLbl').removeClass("alert alert-info");
 				$('#buildingZoningReviewStatusLbl').addClass("alert alert-success");
+				$('#buildingZoningReviewStatusLbl').attr("title","This permit has already surpassed this milestone.");
 			}
 
 			// Make the current box turn yellow
 			$('#buildingIssuanceStatusLbl').removeClass("alert alert-info");
 			$('#buildingIssuanceStatusLbl').addClass("alert alert-warning");
+			$('#buildingIssuanceStatusLbl').attr("title","This is the current milestone for this permit.");
 
 			// Make the subsequent boxes turn red
 			$('#buildingInspectionsStatusLbl').removeClass("alert alert-info");
 			$('#buildingInspectionsStatusLbl').addClass("alert alert-danger");
+			$('#buildingInspectionsStatusLbl').attr("title","This permit has not yet reached this milestone.");
 
 			$('#buildingOccupancyStatusLbl').removeClass("alert alert-info");
 			$('#buildingOccupancyStatusLbl').addClass("alert alert-danger");
+			$('#buildingOccupancyStatusLbl').attr("title","This permit has not yet reached this milestone.");
 
 			$('#buildingCompletedStatusLbl').removeClass("alert alert-info");
 			$('#buildingCompletedStatusLbl').addClass("alert alert-danger");
+			$('#buildingCompletedStatusLbl').attr("title","This permit has not yet reached this milestone.");
 		}
 		if(currentMilestone === "Inspections"){
 			// Make the previous boxes turn green
 			if(milestoneSkipped[0]!="Y"){
 				$('#buildingIntakePaymentStatusLbl').removeClass("alert alert-info");
 				$('#buildingIntakePaymentStatusLbl').addClass("alert alert-success");
+				$('#buildingIntakePaymentStatusLbl').attr("title","This permit has already surpassed this milestone.");
 			}
 			
 			if(milestoneSkipped[1]!="Y"){
 				$('#buildingProjectReviewStatusLbl').removeClass("alert alert-info");
 				$('#buildingProjectReviewStatusLbl').addClass("alert alert-success");
+				$('#buildingProjectReviewStatusLbl').attr("title","This permit has already surpassed this milestone.");
 			}
 
 			if(milestoneSkipped[2]!="Y"){
 				$('#buildingZoningReviewStatusLbl').removeClass("alert alert-info");
 				$('#buildingZoningReviewStatusLbl').addClass("alert alert-success");
+				$('#buildingZoningReviewStatusLbl').attr("title","This permit has already surpassed this milestone.");
 			}
 
 			if(milestoneSkipped[3]!="Y"){
 				$('#buildingIssuanceStatusLbl').removeClass("alert alert-info");
 				$('#buildingIssuanceStatusLbl').addClass("alert alert-success");
+				$('#buildingIssuanceStatusLbl').attr("title","This permit has already surpassed this milestone.");
 			}
 			
 			// Make the current box turn yellow
 			$('#buildingInspectionsStatusLbl').removeClass("alert alert-info");
 			$('#buildingInspectionsStatusLbl').addClass("alert alert-warning");
+			$('#buildingInspectionsStatusLbl').attr("title","This is the current milestone for this permit.");
 
 			// Make the subsequent boxes turn red
 			$('#buildingOccupancyStatusLbl').removeClass("alert alert-info");
 			$('#buildingOccupancyStatusLbl').addClass("alert alert-danger");
+			$('#buildingOccupancyStatusLbl').attr("title","This permit has not yet reached this milestone.");
 
 			$('#buildingCompletedStatusLbl').removeClass("alert alert-info");
 			$('#buildingCompletedStatusLbl').addClass("alert alert-danger");
+			$('#buildingCompletedStatusLbl').attr("title","This permit has not yet reached this milestone.");
 		}
 		if(currentMilestone === "Occupancy"){
 			// Make the previous boxes turn green
 			if(milestoneSkipped[0]!="Y"){
 				$('#buildingIntakePaymentStatusLbl').removeClass("alert alert-info");
 				$('#buildingIntakePaymentStatusLbl').addClass("alert alert-success");
+				$('#buildingIntakePaymentStatusLbl').attr("title","This permit has already surpassed this milestone.");
 			}
 			
 			if(milestoneSkipped[1]!="Y"){
 				$('#buildingProjectReviewStatusLbl').removeClass("alert alert-info");
 				$('#buildingProjectReviewStatusLbl').addClass("alert alert-success");
+				$('#buildingProjectReviewStatusLbl').attr("title","This permit has already surpassed this milestone.");
 			}
 
 			if(milestoneSkipped[2]!="Y"){
 				$('#buildingZoningReviewStatusLbl').removeClass("alert alert-info");
 				$('#buildingZoningReviewStatusLbl').addClass("alert alert-success");
+				$('#buildingZoningReviewStatusLbl').attr("title","This permit has already surpassed this milestone.");
 			}
 
 			if(milestoneSkipped[3]!="Y"){
 				$('#buildingIssuanceStatusLbl').removeClass("alert alert-info");
 				$('#buildingIssuanceStatusLbl').addClass("alert alert-success");
+				$('#buildingIssuanceStatusLbl').attr("title","This permit has already surpassed this milestone.");
 			}
 
 			if(milestoneSkipped[4]!="Y"){
 				$('#buildingInspectionsStatusLbl').removeClass("alert alert-info");
 				$('#buildingInspectionsStatusLbl').addClass("alert alert-success");
+				$('#buildingInspectionsStatusLbl').attr("title","This permit has already surpassed this milestone.");
 			}
 			
 			// Make the current box turn yellow
 			$('#buildingOccupancyStatusLbl').removeClass("alert alert-info");
 			$('#buildingOccupancyStatusLbl').addClass("alert alert-warning");
+			$('#buildingOccupancyStatusLbl').attr("title","This is the current milestone for this permit.");
 
 			// Make the subsequent boxes turn red
 			$('#buildingCompletedStatusLbl').removeClass("alert alert-info");
 			$('#buildingCompletedStatusLbl').addClass("alert alert-danger");
+			$('#buildingCompletedStatusLbl').attr("title","This permit has not yet reached this milestone.");
 		}
 		if(currentMilestone === "Revoked" || currentMilestone === "Abandoned" || currentMilestone === "Completed"){
 			// Make all the boxes turn green
 			$('#buildingIntakePaymentStatusLbl').removeClass("alert alert-info");
 			$('#buildingIntakePaymentStatusLbl').addClass("alert alert-success");
+			$('#buildingIntakePaymentStatusLbl').attr("title","This permit has already surpassed this milestone.");
 
 			$('#buildingProjectReviewStatusLbl').removeClass("alert alert-info");
 			$('#buildingProjectReviewStatusLbl').addClass("alert alert-success");
+			$('#buildingProjectReviewStatusLbl').attr("title","This permit has already surpassed this milestone.");
 
 			$('#buildingZoningReviewStatusLbl').removeClass("alert alert-info");
 			$('#buildingZoningReviewStatusLbl').addClass("alert alert-success");
+			$('#buildingZoningReviewStatusLbl').attr("title","This permit has already surpassed this milestone.");
 
 			$('#buildingIssuanceStatusLbl').removeClass("alert alert-info");
 			$('#buildingIssuanceStatusLbl').addClass("alert alert-success");
+			$('#buildingIssuanceStatusLbl').attr("title","This permit has already surpassed this milestone.");
 
 			$('#buildingInspectionsStatusLbl').removeClass("alert alert-info");
 			$('#buildingInspectionsStatusLbl').addClass("alert alert-success");
+			$('#buildingInspectionsStatusLbl').attr("title","This permit has already surpassed this milestone.");
 
 			$('#buildingOccupancyStatusLbl').removeClass("alert alert-info");
 			$('#buildingOccupancyStatusLbl').addClass("alert alert-success");
+			$('#buildingOccupancyStatusLbl').attr("title","This permit has already surpassed this milestone.");
 
 			$('#buildingCompletedStatusLbl').removeClass("alert alert-info");
 			$('#buildingCompletedStatusLbl').addClass("alert alert-success");
+			$('#buildingCompletedStatusLbl').attr("title","This permit has already surpassed this milestone.");
 
-		}
-		// Fix Skipped Milestones
-		//if(milestoneSkipped[0]==="Y"){}		
+		}		
 	}
 	// For Fire permits
 	if(permitType === "Fire"){
@@ -734,110 +882,134 @@ function showProgress(permitType,currentMilestone,permitID,milestoneSkipped){
 			// Make the current box turn yellow
 			$('#fireIntakePaymentStatusLbl').removeClass("alert alert-info");
 			$('#fireIntakePaymentStatusLbl').addClass("alert alert-warning");
+			$('#fireIntakePaymentStatusLbl').attr("title","This is the current milestone for this permit.");
 
 			// Make the subsequent boxes turn red
 			$('#firePermitReviewStatusLbl').removeClass("alert alert-info");
 			$('#firePermitReviewStatusLbl').addClass("alert alert-danger");
+			$('#firePermitReviewStatusLbl').attr("title","This permit has not yet reached this milestone.");
 
 			$('#fireIssuanceStatusLbl').removeClass("alert alert-info");
 			$('#fireIssuanceStatusLbl').addClass("alert alert-danger");
+			$('#fireIssuanceStatusLbl').attr("title","This permit has not yet reached this milestone.");
 
 			$('#fireInspectionsStatusLbl').removeClass("alert alert-info");
 			$('#fireInspectionsStatusLbl').addClass("alert alert-danger");
+			$('#fireInspectionsStatusLbl').attr("title","This permit has not yet reached this milestone.");
 
 			$('#fireCompletedStatusLbl').removeClass("alert alert-info");
 			$('#fireCompletedStatusLbl').addClass("alert alert-danger");
+			$('#fireCompletedStatusLbl').attr("title","This permit has not yet reached this milestone.");
 		}
 		if(currentMilestone==="Permit Review"){
 			// Make the previous boxes turn green
 			if(milestoneSkipped[0]!="Y"){
 				$('#fireIntakePaymentStatusLbl').removeClass("alert alert-info");
 				$('#fireIntakePaymentStatusLbl').addClass("alert alert-success");
+				$('#fireIntakePaymentStatusLbl').attr("title","This permit has already surpassed this milestone.");
 			}
 
 			// Make the current box turn yellow
 			$('#firePermitReviewStatusLbl').removeClass("alert alert-info");
 			$('#firePermitReviewStatusLbl').addClass("alert alert-warning");
+			$('#firePermitReviewStatusLbl').attr("title","This is the current milestone for this permit.");
 
 			// Make the subsequent boxes turn red
 			$('#fireIssuanceStatusLbl').removeClass("alert alert-info");
 			$('#fireIssuanceStatusLbl').addClass("alert alert-danger");
+			$('#fireIssuanceStatusLbl').attr("title","This permit has not yet reached this milestone.");
 
 			$('#fireInspectionsStatusLbl').removeClass("alert alert-info");
 			$('#fireInspectionsStatusLbl').addClass("alert alert-danger");
+			$('#fireInspectionsStatusLbl').attr("title","This permit has not yet reached this milestone.");
 
 			$('#fireCompletedStatusLbl').removeClass("alert alert-info");
 			$('#fireCompletedStatusLbl').addClass("alert alert-danger");
+			$('#fireCompletedStatusLbl').attr("title","This permit has not yet reached this milestone.");
 		}
 		if(currentMilestone === "Issuance"){
 			// Make the previous boxes turn green
 			if(milestoneSkipped[0]!="Y"){
 				$('#fireIntakePaymentStatusLbl').removeClass("alert alert-info");
 				$('#fireIntakePaymentStatusLbl').addClass("alert alert-success");
+				$('#fireIntakePaymentStatusLbl').attr("title","This permit has already surpassed this milestone.");
 			}
 			
 			if(milestoneSkipped[1]!="Y"){
 				$('#firePermitReviewStatusLbl').removeClass("alert alert-info");
 				$('#firePermitReviewStatusLbl').addClass("alert alert-success");
+				$('#firePermitReviewStatusLbl').attr("title","This permit has already surpassed this milestone.");
 			}
 			
 			// Make the current box turn yellow
 			$('#fireIssuanceStatusLbl').removeClass("alert alert-info");
 			$('#fireIssuanceStatusLbl').addClass("alert alert-warning");
+			$('#fireIssuanceStatusLbl').attr("title","This is the current milestone for this permit.");
 
 			// Make the subsequent boxes turn red
 			$('#fireInspectionsStatusLbl').removeClass("alert alert-info");
 			$('#fireInspectionsStatusLbl').addClass("alert alert-danger");
+			$('#fireInspectionsStatusLbl').attr("title","This permit has not yet reached this milestone.");
 
 			$('#fireCompletedStatusLbl').removeClass("alert alert-info");
 			$('#fireCompletedStatusLbl').addClass("alert alert-danger");
+			$('#fireCompletedStatusLbl').attr("title","This permit has not yet reached this milestone.");
 		}
 		if(currentMilestone === "Inspections"){
 			// Make the previous boxes turn green
 			if(milestoneSkipped[0]!="Y"){
 				$('#fireIntakePaymentStatusLbl').removeClass("alert alert-info");
 				$('#fireIntakePaymentStatusLbl').addClass("alert alert-success");
+				$('#fireIntakePaymentStatusLbl').attr("title","This permit has already surpassed this milestone.");
 			}
 			
 			if(milestoneSkipped[1]!="Y"){
 				$('#firePermitReviewStatusLbl').removeClass("alert alert-info");
 				$('#firePermitReviewStatusLbl').addClass("alert alert-success");
+				$('#firePermitReviewStatusLbl').attr("title","This permit has already surpassed this milestone.");
 			}
 
 			if(milestoneSkipped[2]!="Y"){
 				$('#fireIssuanceStatusLbl').removeClass("alert alert-info");
 				$('#fireIssuanceStatusLbl').addClass("alert alert-success");
+				$('#fireIssuanceStatusLbl').attr("title","This permit has already surpassed this milestone.");
 			}
 			
 			// Make the current box turn yellow
 			$('#fireInspectionsStatusLbl').removeClass("alert alert-info");
 			$('#fireInspectionsStatusLbl').addClass("alert alert-warning");
+			$('#fireInspectionsStatusLbl').attr("title","This is the current milestone for this permit.");
 
 			// Make the subsequent boxes turn red
 			$('#fireCompletedStatusLbl').removeClass("alert alert-info");
 			$('#fireCompletedStatusLbl').addClass("alert alert-danger");
+			$('#fireCompletedStatusLbl').attr("title","This permit has not yet reached this milestone.");
 		}
 		if(currentMilestone === "Revoked" || currentMilestone === "Abandoned" || currentMilestone === "Completed"){
 			// Make all the boxes turn green
 			$('#fireIntakePaymentStatusLbl').removeClass("alert alert-info");
 			$('#fireIntakePaymentStatusLbl').addClass("alert alert-success");
+			$('#fireIntakePaymentStatusLbl').attr("title","This permit has already surpassed this milestone.");
 
 			$('#firePermitReviewStatusLbl').removeClass("alert alert-info");
 			$('#firePermitReviewStatusLbl').addClass("alert alert-success");
+			$('#firePermitReviewStatusLbl').attr("title","This permit has already surpassed this milestone.");
 
 			$('#fireIssuanceStatusLbl').removeClass("alert alert-info");
 			$('#fireIssuanceStatusLbl').addClass("alert alert-success");
+			$('#fireIssuanceStatusLbl').attr("title","This permit has already surpassed this milestone.");
 
 			$('#fireInspectionsStatusLbl').removeClass("alert alert-info");
 			$('#fireInspectionsStatusLbl').addClass("alert alert-success");
+			$('#fireInspectionsStatusLbl').attr("title","This permit has already surpassed this milestone.");
 
 			$('#fireCompletedStatusLbl').removeClass("alert alert-info");
-			$('#fireCompletedStatusLbl').addClass("alert alert-success");	
+			$('#fireCompletedStatusLbl').addClass("alert alert-success");
+			$('#fireCompletedStatusLbl').attr("title","This permit has already surpassed this milestone.");	
 		}
 		// Fix Skipped Milestones
 		//if(milestoneSkipped[0]==="Y"){}		
-	}
-	else {
+	} else {
 		console.log('Invalid Permit Type submitted.');
 	}
 }

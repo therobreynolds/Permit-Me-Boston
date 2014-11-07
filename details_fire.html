@@ -36,7 +36,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <div class="navbar-brand">Permit Me Boston!</div>
+          <div class="navbar-brand">Permit Tracker 9000</div>
         </div>
       </div>
     </div>
@@ -49,34 +49,54 @@
             <div class="input-group">
               <input type="text" class="form-control" id="permitTxt">
                 <span class="input-group-btn">
-                  <button id="submitBtn" class="btn btn-default" type="button">Permit Me!</button>
+                  <button id="submitBtn" class="btn btn-default" type="button">Submit</button>
                 </span>
             </div><!-- /input-group -->
           </div><!-- /.col-lg-6 -->
+          <div>
+            <div class="col-lg-6">
+              Please note that no special characters are allowed as any part of a valid permit number.
+            </div>
+          </div>
         </div>
         <div class="row">
           <div class="col-lg-1">
-            <div id="load"><img src="images/spinner.gif"/></div>
+            <div id="load">Loading &nbsp;<img src="images/spinner.gif"/></div>
           </div>
         </div>
         </br>
         <p text-align="left" id="noInputWarning"></p></br>
-        <p text-align="left" id="trackerTitle">Permit Progress Tracker:</p></br>
+        <p text-align="left" id="trackerTitle">Permit Progress Tracker:</p>
         <div class="row">
-          <div id="fireIntakePaymentStatusBox" class="col-lg-1">
-            <div id="fireIntakePaymentStatusLbl" class="alert alert-info" role="alert">Intake & Payment</div>
-          </div>
+          <div class="col-lg-1"></div>
           <div class="col-lg-4">
-            <div id="firePermitReviewStatusLbl" class="alert alert-info" role="alert">Permit Review</div>
+            <span class="glyphicon glyphicon-arrow-right" id="chevronHolder"></span>
           </div>
           <div class="col-lg-3">
-            <div id="fireIssuanceStatusLbl" class="alert alert-info" role="alert">Issuance</div>
+            <span class="glyphicon glyphicon-arrow-right" id="chevronHolder"></span>
           </div>
           <div class="col-lg-3">
-            <div id="fireInspectionsStatusLbl" class="alert alert-info" role="alert">Inspections</div>
+            <span class="glyphicon glyphicon-arrow-right" id="chevronHolder"></span>
           </div>
           <div class="col-lg-1">
-            <div id="fireCompletedStatusLbl" class="alert alert-info" role="alert">Completed</div>
+            <span class="glyphicon glyphicon-arrow-right" id="chevronHolder"></span>
+          </div>
+        </div> 
+        <div class="row">
+          <div class="col-lg-1">
+            <div id="fireIntakePaymentStatusLbl" class="alert alert-info" role="alert" title"There is no information on this milestone at this time.">Intake & Payment<br><br><br><br><br><br></div>
+          </div>
+          <div class="col-lg-4">
+            <div id="firePermitReviewStatusLbl" class="alert alert-info" role="alert" title"There is no information on this milestone at this time.">Permit Review<br><br><br><br><br><br><br></div>
+          </div>
+          <div class="col-lg-3">
+            <div id="fireIssuanceStatusLbl" class="alert alert-info" role="alert" title"There is no information on this milestone at this time.">Issuance<br><br><br><br><br><br><br></div>
+          </div>
+          <div class="col-lg-3">
+            <div id="fireInspectionsStatusLbl" class="alert alert-info" role="alert" title"There is no information on this milestone at this time.">Inspections<br><br><br><br><br><br><br></div>
+          </div>
+          <div class="col-lg-1">
+            <div id="fireCompletedStatusLbl" class="alert alert-info" role="alert" title"There is no information on this milestone at this time.">Completed<br><br><br><br><br><br><br></div>
           </div>
         </div>
         <p id="statusOnDateLbl"></p>
