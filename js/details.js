@@ -43,6 +43,38 @@ function getData(permitID){
 		// Call the function to display the data with the resulting json objects
 		displayData(dataElementsJsonObject,milestonesJsonObject,reviewsJsonObject,buildingJsonObject,fireJsonObject,relatedPermitsJsonObject);
 	});
+
+
+	// $.when(
+	// // Grab the data export data
+	// $.getJSON('http://default-environment-iygu5qavq7.elasticbeanstalk.com/data.php?number=' + permitID, function(data) {
+	//   	var dataElementsJsonObject = data;//.slice(0,1);
+	// }),
+	// // grab the milestone data
+	// $.getJSON('http://default-environment-iygu5qavq7.elasticbeanstalk.com/milestone.php?number=' + permitID, function(data) {
+	//   	var milestonesJsonObject = data;
+	// }),
+	// // grab the review data
+	// $.getJSON('http://default-environment-iygu5qavq7.elasticbeanstalk.com/review.php?number=' + permitID, function(data) {
+	//   	var reviewsJsonObject = data;
+	// }),
+	// // grab the buildingmilestones data
+	// $.getJSON('http://default-environment-iygu5qavq7.elasticbeanstalk.com/buildingmilestonestranslated.php?number=' + permitID, function(data) {
+	//   	var buildingJsonObject = data;
+	// }),
+	// // grab the firemilestones data
+	// $.getJSON('http://default-environment-iygu5qavq7.elasticbeanstalk.com/firemilestonestranslated.php?number=' + permitID, function(data) {
+	//   	var fireJsonObject = data;
+	// }),
+	// // grab the related permits data
+	// //$.getJSON('http://default-environment-iygu5qavq7.elasticbeanstalk.com/relatedPermits.php?number=' + permitID, function(data) {
+	// $.getJSON('http://default-environment-iygu5qavq7.elasticbeanstalk.com/relatedPermits.php?number=' + permitID, function(data) {
+	//   	var relatedPermitsJsonObject = data;
+	// })
+	// ).done(function(dataElementsJsonObject,milestonesJsonObject,reviewsJsonObject,buildingJsonObject,fireJsonObject,relatedPermitsJsonObject){
+	// 	// Call the function to display the data with the resulting json objects
+	// 	displayData(dataElementsJsonObject,milestonesJsonObject,reviewsJsonObject,buildingJsonObject,fireJsonObject,relatedPermitsJsonObject);
+	// });
 }
 // Use the argument json objects to fill in the data on the page
 function displayData(dataElementsJsonObject,milestonesJsonObject,reviewsJsonObject,buildingJsonObject,fireJsonObject,relatedPermitsJsonObject) {

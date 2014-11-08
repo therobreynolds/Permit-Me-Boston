@@ -17,7 +17,7 @@ $(document).ready(function() {
 			setTimeout(function() {
 				$('#load').hide();
 					$('#noInputWarning').html("<b>The permit number, #"+permitNumber+", for which you are attempting to search, does not appear in the system.  Please verify that you have entered a valid permit number and try again.</b>");
-			}, 1000)
+			}, 2000)
 		); 
 	});
 	$("#permitTxt").keyup(function(event){

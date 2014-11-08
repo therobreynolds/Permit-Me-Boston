@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Permit Tracker 9000</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <style>
+            body {
+                padding-top: 50px;
+                padding-bottom: 20px;
+            }
+        </style>
+        <link rel="stylesheet" href="css/bootstrap-theme.min.css">
+        <link rel="stylesheet" href="css/main.css">
+
+        <script src="js/vendor/modernizr-2.6.2-respond-1.1.0.min.js"></script>
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <div class="navbar-brand">Permit Me Boston!</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main jumbotron for a primary marketing message or call to action -->
+    <div class="jumbotron">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-6">
+            <div class="input-group">
+              <input type="text" class="form-control" id="permitTxt">
+                <span class="input-group-btn">
+                  <button id="submitBtn" class="btn btn-default" type="button">Submit</button>
+                </span>
+            </div><!-- /input-group -->
+          </div><!-- /.col-lg-6 -->
+        </div></br>
+        <p text-align="left" id="noInputWarning"></p></br>
+        <div class="row">
+          <div class="col-lg-1">
+            <div id="buildingIntakePaymentStatusLbl" class="alert alert-info" role="alert">Intake & Payment</div>
+          </div>
+          <div class="col-lg-2">
+            <div id="buildingProjectReviewStatusLbl" class="alert alert-info" role="alert">Project Review</div>
+          </div>
+          <div class="col-lg-4">
+            <div id="buildingZoningReviewStatusLbl" class="alert alert-info" role="alert">Zoning Review</div>
+          </div>
+          <div class="col-lg-1">
+            <div id="buildingIssuanceStatusLbl" class="alert alert-info" role="alert">Issuance</div>
+          </div>
+          <div class="col-lg-2">
+            <div id="buildingInspectionsStatusLbl" class="alert alert-info" role="alert">Inspections</div>
+          </div>
+          <div class="col-lg-1">
+            <div id="buildingOccupancyStatusLbl" class="alert alert-info" role="alert">Occupancy</div>
+          </div>
+          <div class="col-lg-1">
+            <div id="buildingCompletedStatusLbl" class="alert alert-info" role="alert">Completed</div>
+          </div>
+        </div>
+        <p id="statusOnDateLbl"></p>
+        <p id="descriptionLbl">No Description</p>
+        <div class="row">
+          <div class="col-lg-4">
+            <div class="panel panel-warning">
+              <div class="panel-heading"><h3 class="panel-title"><span class="glyphicon glyphicon-info-sign"></span> About This Permit</h3></div>
+              <div id="permitInfoText" class="panel-body">No Information</div>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="panel panel-warning">
+              <div class="panel-heading"><h3 class="panel-title"><span class="glyphicon glyphicon-user"></span> Who's Working on This Permit?</h3></div>
+              <div id="contactPOC" class="panel-body">No Information</div>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="panel panel-warning">
+              <div class="panel-heading"><h3 class="panel-title"><span class="glyphicon glyphicon-certificate"></span> Permit Reviews</h3></div>
+              <div id="reviewsText" class="panel-body">No Information</div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-4">
+            <div class="panel panel-warning">
+              <div class="panel-heading"><h3 class="panel-title"><span class="glyphicon glyphicon-home"></span> Permit Address</h3></div>
+              <div id="addressInfo" class="panel-body">No Information</div>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="panel panel-warning">
+              <div class="panel-heading"><h3 class="panel-title"><span class="glyphicon glyphicon-paperclip"></span> Related Permits</h3></div>
+              <div id="relatedPermits" class="panel-body">No Information</div>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="panel panel-warning">
+              <div class="panel-heading"><h3 class="panel-title"><span class="glyphicon glyphicon-earphone"></span> Who Can I Call?</h3></div>
+              <div id="contactInfo" class="panel-body">No Information</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+        <script src="js/vendor/jquery-1.11.0.min.js"></script>
+        <script src="js/vendor/bootstrap.min.js"></script>
+        <script src="js/details.js"></script>
+        <script src="js/main.js"></script>
+
+    </body>
+</html>
