@@ -16,7 +16,7 @@ function getData(permitID){
 	$.when(
 	// Grab the data export data
 	$.getJSON('http://default-environment-iygu5qavq7.elasticbeanstalk.com/data.php?number=' + permitID, function(data) {
-	  	var dataElementsJsonObject = data;//.slice(0,1);
+	  	var dataElementsJsonObject = data;
 	}),
 	// grab the milestone data
 	$.getJSON('http://default-environment-iygu5qavq7.elasticbeanstalk.com/milestone.php?number=' + permitID, function(data) {
@@ -35,46 +35,13 @@ function getData(permitID){
 	  	var fireJsonObject = data;
 	}),
 	// grab the related permits data
-	//$.getJSON('http://default-environment-iygu5qavq7.elasticbeanstalk.com/relatedPermits.php?number=' + permitID, function(data) {
-	$.getJSON('http://default-environment-iygu5qavq7.elasticbeanstalk.com/buildingmilestonestranslated.php?number=' + permitID, function(data) {
+	$.getJSON('http://default-environment-iygu5qavq7.elasticbeanstalk.com/relatedPermits.php?number=' + permitID, function(data) {
 	  	var relatedPermitsJsonObject = data;
 	})
 	).done(function(dataElementsJsonObject,milestonesJsonObject,reviewsJsonObject,buildingJsonObject,fireJsonObject,relatedPermitsJsonObject){
 		// Call the function to display the data with the resulting json objects
 		displayData(dataElementsJsonObject,milestonesJsonObject,reviewsJsonObject,buildingJsonObject,fireJsonObject,relatedPermitsJsonObject);
 	});
-
-
-	// $.when(
-	// // Grab the data export data
-	// $.getJSON('http://default-environment-iygu5qavq7.elasticbeanstalk.com/data.php?number=' + permitID, function(data) {
-	//   	var dataElementsJsonObject = data;//.slice(0,1);
-	// }),
-	// // grab the milestone data
-	// $.getJSON('http://default-environment-iygu5qavq7.elasticbeanstalk.com/milestone.php?number=' + permitID, function(data) {
-	//   	var milestonesJsonObject = data;
-	// }),
-	// // grab the review data
-	// $.getJSON('http://default-environment-iygu5qavq7.elasticbeanstalk.com/review.php?number=' + permitID, function(data) {
-	//   	var reviewsJsonObject = data;
-	// }),
-	// // grab the buildingmilestones data
-	// $.getJSON('http://default-environment-iygu5qavq7.elasticbeanstalk.com/buildingmilestonestranslated.php?number=' + permitID, function(data) {
-	//   	var buildingJsonObject = data;
-	// }),
-	// // grab the firemilestones data
-	// $.getJSON('http://default-environment-iygu5qavq7.elasticbeanstalk.com/firemilestonestranslated.php?number=' + permitID, function(data) {
-	//   	var fireJsonObject = data;
-	// }),
-	// // grab the related permits data
-	// //$.getJSON('http://default-environment-iygu5qavq7.elasticbeanstalk.com/relatedPermits.php?number=' + permitID, function(data) {
-	// $.getJSON('http://default-environment-iygu5qavq7.elasticbeanstalk.com/relatedPermits.php?number=' + permitID, function(data) {
-	//   	var relatedPermitsJsonObject = data;
-	// })
-	// ).done(function(dataElementsJsonObject,milestonesJsonObject,reviewsJsonObject,buildingJsonObject,fireJsonObject,relatedPermitsJsonObject){
-	// 	// Call the function to display the data with the resulting json objects
-	// 	displayData(dataElementsJsonObject,milestonesJsonObject,reviewsJsonObject,buildingJsonObject,fireJsonObject,relatedPermitsJsonObject);
-	// });
 }
 // Use the argument json objects to fill in the data on the page
 function displayData(dataElementsJsonObject,milestonesJsonObject,reviewsJsonObject,buildingJsonObject,fireJsonObject,relatedPermitsJsonObject) {
@@ -92,9 +59,25 @@ function displayData(dataElementsJsonObject,milestonesJsonObject,reviewsJsonObje
 	relatedPermitsList = relatedPermitsJsonObject.slice(0,1)[0];
 	// console.log(relatedPermitsList);
 
-	// Set variables for filling in the page
+	// Set variables for filling in the rest of the page
 	var permitType = dataElementsList.BuildingOrFire.toString();
 	var permitID = dataElementsList.PermitNumber.toString();
+
+	// Display related permits
+	var relatedPermitsOutput = "";
+	$.each(relatedPermitsList, function(key,value){
+		if(value === "Fire"){
+			relatedPermitsOutput += "<li><a href=\"details_fire.html?id="+key+"\">"+key+"</a></li>";
+		}
+		if(value === "Building"){
+			relatedPermitsOutput += "<li><a href=\"details.html?id="+key+"\">"+key+"</a></li>";
+		}
+	});
+	if(relatedPermitsOutput!=""){
+		relatedPermitsOutput = "<ul>"+relatedPermitsOutput+"</ul>";
+		$('#relatedPermits').html(relatedPermitsOutput);
+	}
+
 	// Put milestones in order
 	var condensedMilestonesList = new Object();
 	if(permitType === "Fire"){
@@ -182,7 +165,7 @@ function displayData(dataElementsJsonObject,milestonesJsonObject,reviewsJsonObje
 					}
 				}		
 			});
-			console.log(condensedMilestonesList);
+			//console.log(condensedMilestonesList);
 		});
 		// Determine the current Milestone and if a milestone has been skipped.  Also output some data elements.
 		var currentMilestone = "";
@@ -195,7 +178,7 @@ function displayData(dataElementsJsonObject,milestonesJsonObject,reviewsJsonObje
 			$('#contactPOC').html(condensedMilestonesList.Completed.POC);
 			$('#fireCompletedStatusLbl').html("<b>Completed</b><br><u>Completed On:</u> "
 				+(condensedMilestonesList.Completed.MilestoneStartDate.getMonth()+1)+"/"+condensedMilestonesList.Completed.MilestoneStartDate.getDate()+"/"+condensedMilestonesList.Completed.MilestoneStartDate.getFullYear()
-				+"<br><br><br><br><br><br>");
+				+"<br><br><br><br>");
 		} else {
 			$('#fireCompletedStatusLbl').html("<b>Completed</b><br><br><br><br><br><br><br><br>");
 			if(condensedMilestonesList.Inspections.DisplayStatus){
@@ -1038,9 +1021,7 @@ function showProgress(permitType,currentMilestone,permitID,milestoneSkipped){
 			$('#fireCompletedStatusLbl').removeClass("alert alert-info");
 			$('#fireCompletedStatusLbl').addClass("alert alert-success");
 			$('#fireCompletedStatusLbl').attr("title","This permit has already surpassed this milestone.");	
-		}
-		// Fix Skipped Milestones
-		//if(milestoneSkipped[0]==="Y"){}		
+		}		
 	} else {
 		console.log('Invalid Permit Type submitted.');
 	}

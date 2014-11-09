@@ -6,7 +6,7 @@ header("Access-Control-Allow-Origin: *");
 
 $address = "";
 $number = stripslashes($_GET['number']);
-$relatedPermitsArray = new Array();
+$relatedPermitsArray = array();
 if(!empty($number)) {
        $filename = 'ExportData.csv';
        $contents = file($filename);
@@ -22,7 +22,7 @@ if(!empty($number)) {
        foreach ($contents as $line) {
               $arrayLine = explode(",", $line);
               if($address == $arrayLine[3]) {
-                  $relatedPermitsArray[$count] = $arrayLine[0];
+                  $relatedPermitsArray[$arrayLine[0]] = $arrayLine[1];
                   $count++;
                }
        }
