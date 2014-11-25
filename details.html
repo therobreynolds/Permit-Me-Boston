@@ -6,154 +6,145 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title>Permit Tracker 9000</title>
+        <title>Permit Finder | City of Boston</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <link rel="stylesheet" href="css/bootstrap.min.css">
-        <style>
-            body {
-                padding-top: 50px;
-                padding-bottom: 20px;
-            }
-        </style>
+        <link rel="stylesheet" href="css/bootstrap.css">
         <link rel="stylesheet" href="css/bootstrap-theme.min.css">
         <link rel="stylesheet" href="css/main.css">
+        <style type="text/css">
+        @font-face { 
+          font-family: "Lato";
+           src: url(fonts/Lato-Medium.ttf) format("truetype");
+         }
+        </style>
 
         <script src="js/vendor/modernizr-2.6.2-respond-1.1.0.min.js"></script>
     </head>
     <body>
-        <!--[if lt IE 7]>
-            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-        <![endif]-->
-    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <div class="navbar-brand">Permit Tracker 9000</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Main jumbotron for a primary marketing message or call to action -->
     <div class="jumbotron">
       <div class="container">
         <div class="row">
-          <div class="col-lg-6">
-            <div class="input-group">
-              <input type="text" class="form-control" id="permitTxt">
-                <span class="input-group-btn">
-                  <button id="submitBtn" class="btn btn-default" type="button">Submit</button>
-                </span>
-            </div><!-- /input-group -->
-          </div><!-- /.col-lg-6 -->
-          <div>
-            <div class="col-lg-6">
-              Please note that no special characters are allowed as any part of a valid permit number.
+          <div class="col-lg-2"><img src="css/images/logo_dark.png" width="160" height="168"></div>
+          <div class="col-lg-7">
+            <div id="load">Loading &nbsp;<img src="css/images/spinner.gif"/></div>
+          </div>
+            <div class="col-lg-3">
+              <input type="text" id="permitTxt" placeholder="Permit Number">
+              <button id="submitBtn" class="btn btn-default" type="button">Submit</button>
+              <hr>
+              <p id="permitInfoTextTitle">ABOUT THIS PERMIT</p>
+              <p id="permitInfoText"></p>
+              <p id="addressInfo"></p>
+              <hr>
             </div>
           </div>
-        </div>
-        <div class="row">
-          <div class="col-lg-1">
-            <div id="load">Loading &nbsp;<img src="images/spinner.gif"/></div>
-          </div>
-        </div>
-        </br>
-        <p text-align="left" id="noInputWarning"></p>
-        <p text-align="left" id="trackerTitle">Permit Progress Tracker:</p>
-        <div class="row">
-          <div class="col-lg-1"></div>
-          <div class="col-lg-2">
-            <span class="glyphicon glyphicon-arrow-right" id="chevronHolder"></span>
-          </div>
-          <div class="col-lg-4">
-            <span class="glyphicon glyphicon-arrow-right" id="chevronHolder"></span>
-          </div>
-          <div class="col-lg-1">
-            <span class="glyphicon glyphicon-arrow-right" id="chevronHolder"></span>
-          </div>
-          <div class="col-lg-2">
-            <span class="glyphicon glyphicon-arrow-right" id="chevronHolder"></span>
-          </div>
-          <div class="col-lg-1">
-            <span class="glyphicon glyphicon-arrow-right" id="chevronHolder"></span>
-          </div>
-          <div class="col-lg-1">
-            <span class="glyphicon glyphicon-arrow-right" id="chevronHolder"></span>
-          </div>
-        </div>        
-        <div class="row">
-          <div class="col-lg-1">
-            <div id="buildingIntakePaymentStatusLbl" class="alert alert-info" role="alert" title"There is no information on this milestone at this time.">Intake & Payment<br><br><br><br><br><br></div>
-          </div>
-          <div class="col-lg-2">
-            <div id="buildingProjectReviewStatusLbl" class="alert alert-info" role="alert" title"There is no information on this milestone at this time.">Project Review<br><br><br><br><br><br><br></div>
-          </div>
-          <div class="col-lg-4">
-            <div id="buildingZoningReviewStatusLbl" class="alert alert-info" role="alert" title"There is no information on this milestone at this time.">Zoning Review<br><br><br><br><br><br><br></div>
-          </div>
-          <div class="col-lg-1">
-            <div id="buildingIssuanceStatusLbl" class="alert alert-info" role="alert" title"There is no information on this milestone at this time.">Issuance<br><br><br><br><br><br><br></div>
-          </div>
-          <div class="col-lg-2">
-            <div id="buildingInspectionsStatusLbl" class="alert alert-info" role="alert" title"There is no information on this milestone at this time.">Inspections<br><br><br><br><br><br><br></div>
-          </div>
-          <div class="col-lg-1">
-            <div id="buildingOccupancyStatusLbl" class="alert alert-info" role="alert" title"There is no information on this milestone at this time.">Occupancy<br><br><br><br><br><br><br></div>
-          </div>
-          <div class="col-lg-1">
-            <div id="buildingCompletedStatusLbl" class="alert alert-info" role="alert" title"There is no information on this milestone at this time.">Completed<br><br><br><br><br><br><br></div>
-          </div>
-        </div>
         <p id="statusOnDateLbl"></p>
-        <p id="descriptionLbl">No Description</p>
-        <div class="row">
-          <div class="col-lg-4">
-            <div class="panel panel-warning">
-              <div class="panel-heading"><h3 class="panel-title"><span class="glyphicon glyphicon-info-sign"></span> About This Permit</h3></div>
-              <div id="permitInfoText" class="panel-body">No Information</div>
+        <p id="descriptionLbl"></p>
+        <p text-align="left" id="noInputWarning"></p>   
+        <!--Start of tracker section-->    
+        <div class="row seven-cols">
+          <div class="col-lg-1 col-md-3 col-sm-4 col-xs-6">
+            <div class="tile-progress tile-inactive" id="buildingIntakePaymentTile">
+              <div class="tile-header">
+                <table><tr><td><img src="css/images/1off_purple.png" alt="1" id="buildingIntakePaymentNumber"></td><td>&nbsp;</td><td><h3>Intake and Payment</h3></td></tr></table>
+              </div>
+              <div class="tile-footer">
+                <span id="buildingIntakePaymentStatusLbl">No Information</span>
+              </div>
             </div>
           </div>
-          <div class="col-lg-4">
-            <div class="panel panel-warning">
-              <div class="panel-heading"><h3 class="panel-title"><span class="glyphicon glyphicon-user"></span> Who's Working on This Permit?</h3></div>
-              <div id="contactPOC" class="panel-body">No Information</div>
+          <div class="col-lg-1 col-md-3 col-sm-4 col-xs-6">
+            <div class="tile-progress tile-inactive" id="buildingProjectReviewTile">
+              <div class="tile-header">
+                <table><tr><td><img src="css/images/2off_purple.png" alt="2" id="buildingProjectReviewNumber"></td><td>&nbsp;</td><td><h3>Project Review</h3></td></tr></table>
+              </div>
+              <div class="tile-footer">
+                <span id="buildingProjectReviewStatusLbl">No Information</span>
+              </div>
             </div>
           </div>
-          <div class="col-lg-4">
-            <div class="panel panel-warning">
-              <div class="panel-heading"><h3 class="panel-title"><span class="glyphicon glyphicon-certificate"></span> Permit Reviews</h3></div>
-              <div id="reviewsText" class="panel-body">No Information</div>
+          <div class="col-lg-1 col-md-3 col-sm-4 col-xs-6">
+            <div class="tile-progress tile-inactive" id="buildingZoningReviewTile">
+              <div class="tile-header">
+                <table><tr><td><img src="css/images/3off_purple.png" alt="3" id="buildingZoningReviewNumber"></td><td>&nbsp;</td><td><h3>Zoning Review</h3></td></tr></table>
+              </div>
+              <div class="tile-footer">
+                <span id="buildingZoningReviewStatusLbl">No Information</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-1 col-md-3 col-sm-4 col-xs-6">
+            <div class="tile-progress tile-inactive" id="buildingIssuanceTile">
+              <div class="tile-header">
+                <table><tr><td><img src="css/images/4off_purple.png" alt="4" id="buildingIssuanceNumber"></td><td>&nbsp;</td><td><h3>Issuance<br>&nbsp;</h3></td></tr></table>
+              </div>
+              <div class="tile-footer">
+                <span id="buildingIssuanceStatusLbl">No Information</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-1 col-md-3 col-sm-4 col-xs-6">
+            <div class="tile-progress tile-inactive" id="buildingInspectionsTile">
+              <div class="tile-header">
+                <table><tr><td><img src="css/images/5off_purple.png" alt="5" id="buildingInspectionsNumber"></td><td>&nbsp;</td><td><h3>Inspection<br>&nbsp;</h3></td></tr></table>
+              </div>
+              <div class="tile-footer">
+                <span id="buildingInspectionsStatusLbl">No Information</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-1 col-md-3 col-sm-4 col-xs-6">
+            <div class="tile-progress tile-inactive" id="buildingOccupancyTile">
+              <div class="tile-header">
+                <table><tr><td><img src="css/images/6off_purple.png" alt="6" id="buildingOccupancyNumber"></td><td>&nbsp;</td><td><h3>Occupancy<br>&nbsp;</h3></td></tr></table>
+              </div>
+              <div class="tile-footer">
+                <span id="buildingOccupancyStatusLbl">No Information</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-1 col-md-3 col-sm-4 col-xs-6">
+            <div class="tile-progress tile-inactive" id="buildingCompletedTile">
+              <div class="tile-header">
+                <table><tr><td><img src="css/images/7off_purple.png" alt="7" id="buildingCompletedNumber"></td><td>&nbsp;</td><td><h3>Completed<br>&nbsp;</h3></td></tr></table>
+              </div>
+              <div class="tile-footer">
+                <span id="buildingCompletedStatusLbl">No Information</span>
+              </div>
             </div>
           </div>
         </div>
+        <!--End of tracker section-->
         <div class="row">
-          <div class="col-lg-4">
-            <div class="panel panel-warning">
-              <div class="panel-heading"><h3 class="panel-title"><span class="glyphicon glyphicon-home"></span> Permit Address</h3></div>
-              <div id="addressInfo" class="panel-body">No Information</div>
-            </div>
+          <div class="col-lg-3">
+            <div id="reviewsTextTitle">REVIEW PROCESS</div>
+            <div id="reviewsText"></div>
+            <hr>
           </div>
-          <div class="col-lg-4">
-            <div class="panel panel-warning">
-              <div class="panel-heading"><h3 class="panel-title"><span class="glyphicon glyphicon-paperclip"></span> Related Permits</h3></div>
-              <div id="relatedPermits" class="panel-body">No Information</div>
-            </div>
-          </div>
-          <div class="col-lg-4">
-            <div class="panel panel-warning">
-              <div class="panel-heading"><h3 class="panel-title"><span class="glyphicon glyphicon-earphone"></span> Who Can I Call?</h3></div>
-              <div id="contactInfo" class="panel-body">No Information</div>
-            </div>
+          <div class="col-lg-3">
+            <div id="contactInfoTitle">HAVE QUESTIONS ABOUT THIS PERMIT?</div>
+            <div id="contactInfo"></div>
+            <hr>            
           </div>
         </div>
       </div>
     </div>
+    <footer>
+      <div class="row">
+        <div class="col-lg-4"></div>
+        <div class="col-lg-8">
+          <table>
+            <tr>
+              <td><img src="css/images/phone-icon_purple.png"></td><td>&nbsp;</td>
+              <td><p id="catchAllInstructions1">Don't know your permit number?  Still have questions?</p>
+                  <p id="catchAllInstructions2">Call the Inspectional Services Department at [617] 625-5300.</p></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </footer>
 
         <script src="js/vendor/jquery-1.11.0.min.js"></script>
         <script src="js/vendor/bootstrap.min.js"></script>

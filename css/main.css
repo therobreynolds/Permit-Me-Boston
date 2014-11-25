@@ -83,18 +83,18 @@ h2 {
 	text-align: center;
 }
 
-#chevronHolder{
-	margin-left: -8px;
-}
-
 #descriptionLbl {
 	text-align: left;
 	margin-top: 10px;
+	color: #333;
+	font-size: 20px;
 }
 
 #statusOnDateLbl {
 	text-align: left;
 	margin-top: 10px;
+	color: #333;
+	font-size: 34px;
 }
 
 .col-lg-1, .col-lg-2, .col-lg-4, .col-lg-3 {
@@ -122,9 +122,131 @@ h2 {
 /* Spinner*/
 #load {
    display: none;
+   color: #333;
 }
 
+body {
+	padding-top: 0px;
+	padding-bottom: 0px;
+	background-image: url("images/bg_light.jpg");
+	font-family: 'Lato', sans-serif;
+}
+
+#permitTxt {
+    background: #fff;
+    color: #333;
+    border-color: #405569;
+    width: 64%;
+    height: 30px;
+    text-indent: 5px;
+    font-weight: 10;
+}
+
+#submitBtn {
+	width: 30%;
+	height: 30px;
+	text-shadow: none;
+	color: white;
+	border-color: #405569;
+	border-radius: 0px;
+
+}
+.btn-default{
+	background: none;
+	background-color: #405569;	
+}
+.btn-default:hover{
+	background: none;
+	background-color: #93baca;
+}
+
+ @media (min-width: 1200px) {
+  .seven-cols .col-md-1,
+  .seven-cols .col-sm-1,
+  .seven-cols .col-lg-1 {
+    width: 14.285714285714285714285714285714%;
+    *width: 14.285714285714285714285714285714%;
+  }
+}
+/* 14% = 100% (full-width row) divided by 7 */
+
+/* Tiles */
+.tile-progress {
+background: #00a65b;
+color: #fff;
+margin-bottom: 20px;
 
 
+}
+.tile-progress .tile-header {
+padding: 5px 5px;
+padding-top: 5px;
+padding-bottom: 5px;
+height: 80px;
+text-align: top;
+}
+.tile-progress h3 {
+	font-size: 21px;
+}
+.tile-progress .tile-footer {
+padding: 10px;
+text-align: left;
+background: rgba(0,0,0,0.2);
 
+height: 100px;
+color: #ffffff;
+font-size: 13px;
+}
+.tile-progress.tile-active {
+background-color: #93baca;
+color: #1c2936;
+}
+.tile-progress.tile-inactive {
+background-color: #69699b;
+color: #ffffff;
+}
 
+hr { 
+	width:100%; 
+	height:1px; 
+	border-color: #405569;
+}
+
+#contactInfoTitle {
+	color: #69699b;
+}
+#contactInfo {
+	color: #333;
+}
+#reviewsTextTitle {
+	color: #69699b;
+}
+#reviewsText {
+	color: #333;
+}
+#permitInfoTextTitle{
+	color: #69699b;
+	font-size: 12px;
+}
+#permitInfoText {
+	color: #333;
+	font-size: 14px;
+	margin-bottom: 5px;
+}
+#addressInfo {
+	color: #333;
+	font-size: 14px;
+	margin-bottom: 0px;
+}
+#catchAllInstructions1 {
+	color: #333;
+	font-size: 23px;
+	font-weight: bold;
+	margin-bottom: 0px;
+}
+#catchAllInstructions2 {
+	color: #333;
+	font-size: 23px;
+	margin-bottom: 0px;
+	margin-top: 0px;
+}
